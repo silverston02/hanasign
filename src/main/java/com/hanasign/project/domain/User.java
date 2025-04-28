@@ -12,7 +12,7 @@ import lombok.*;
 public class User {
 t
     @Id
-    private Long userID;
+    private Long id;
 
     private String username;
 
@@ -20,5 +20,5 @@ t
 
     private String password;
 
-    private String userPermission;
+    private String role;
 }

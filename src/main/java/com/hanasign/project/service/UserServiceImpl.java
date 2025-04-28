@@ -1,7 +1,5 @@
 package com.hanasign.project.service;
 
-
-
 import com.hanasign.project.dto.UserDTO;
 import com.hanasign.project.domain.User;
 import com.hanasign.project.repository.UserRepository;
@@ -19,21 +17,21 @@ public class UserServiceImpl implements UserService {
 
     private UserDTO toDTO(User user) {
         return new UserDTO(
-                user.getUserID(),
+                user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getUserPermission()
+                user.getRole()
         );
     }
 
     private User toEntity(UserDTO dto) {
         return User.builder()
-                .userID(dto.getUserID())
+                .id(dto.getId())
                 .username(dto.getUsername())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
-                .userPermission(dto.getUserPermission())
+                .role(dto.getRole())
                 .build();
     }
 
@@ -43,8 +41,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUser(Long userID) {
-        return userRepository.findById(userID).map(this::toDTO).orElse(null);
+    public UserDTO getUser(Long id) {
+        return userRepository.findById(id).map(this::toDTO).orElse(null);
     }
 
     @Override
@@ -53,17 +51,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO updateUser(Long userID, UserDTO dto) {
-        User user = userRepository.findById(userID).orElseThrow();
+    public UserDTO updateUser(Long id, UserDTO dto) {
+        User user = userRepository.findById(id).orElseThrow();
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
-        user.setUserPermission(dto.getUserPermission());
+        user.setRole(dto.getRole());
         return toDTO(userRepository.save(user));
     }
 
     @Override
-    public void deleteUser(Long userID) {
-        userRepository.deleteById(userID);
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 }
