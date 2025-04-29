@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class User {
-t
+
     @Id
     private Long id;
 

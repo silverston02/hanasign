@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HanaSign - 전자계약 시스템</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HanaSign</h1>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active" data-section="contracts">계약관리</a></li>
+                    <li><a href="#" data-section="templates">템플릿</a></li>
+                    <li><a href="#" data-section="settings">설정</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section id="contracts" class="section active">
+                <div class="section-header">
+                    <h2>계약 관리</h2>
+                    <button class="btn primary" id="createContract">새 계약 작성</button>
+                </div>
+
+                <div class="contract-list">
+                    <div class="contract-filters">
+                        <select id="statusFilter">
+                            <option value="">전체 상태</option>
+                            <option value="WAITING">대기중</option>
+                            <option value="IN_PROGRESS">진행중</option>
+                            <option value="COMPLETED">완료</option>
+                            <option value="REJECTED">거절됨</option>
+                        </select>
+                        <input type="text" id="searchContract" placeholder="계약 검색...">
+                    </div>
+
+                    <table class="contract-table">
+                        <thead>
+                            <tr>
+                                <th>계약명</th>
+                                <th>생성일</th>
+                                <th>만료일</th>
+                                <th>상태</th>
+                                <th>작업</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contractTableBody">
+                            <!-- 계약 목록이 여기에 동적으로 추가됩니다 -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <!-- 계약 생성 모달 -->
+        <div id="createContractModal" class="modal">
+            <div class="modal-content">
+                <h2>새 계약 작성</h2>
+                <form id="contractForm">
+                    <div class="form-group">
+                        <label for="contractTitle">계약명</label>
+                        <input type="text" id="contractTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contractDescription">설명</label>
+                        <textarea id="contractDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contractFile">계약서 파일</label>
+                        <input type="file" id="contractFile" accept=".pdf,.doc,.docx" required>
+                    </div>
+                    <div class="form-group">
+                        <label>서명자</label>
+                        <div id="signersList">
+                            <div class="signer-input">
+                                <input type="email" placeholder="이메일" required>
+                                <input type="text" placeholder="이름" required>
+                                <button type="button" class="remove-signer">삭제</button>
+                            </div>
+                        </div>
+                        <button type="button" id="addSigner">서명자 추가</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="expiryDate">만료일</label>
+                        <input type="date" id="expiryDate">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn secondary" id="cancelContract">취소</button>
+                        <button type="submit" class="btn primary">계약 생성</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="dist/app.js"></script>
+</body>
+</html> 
