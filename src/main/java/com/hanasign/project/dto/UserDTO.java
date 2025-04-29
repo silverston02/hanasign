@@ -3,6 +3,9 @@ package com.hanasign.project.dto;
 import lombok.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class UserDTO {
     private Long userID;
     private String username;
