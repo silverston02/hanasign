@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HanaSign - 전자계약 관리 시스템</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HanaSign</h1>
+            <nav>
+                <button id="newContractBtn" class="btn primary">새 계약서</button>
+            </nav>
+        </header>
+
+        <main>
+            <div class="contract-filters">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="계약서 검색...">
+                </div>
+                <div class="filter-box">
+                    <select id="statusFilter">
+                        <option value="all">모든 상태</option>
+                        <option value="waiting">대기중</option>
+                        <option value="in-progress">진행중</option>
+                        <option value="completed">완료</option>
+                        <option value="rejected">거절</option>
+                    </select>
+                </div>
+            </div>
+
+            <table class="contract-table">
+                <thead>
+                    <tr>
+                        <th>제목</th>
+                        <th>생성일</th>
+                        <th>만료일</th>
+                        <th>상태</th>
+                        <th>작업</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Contracts will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </main>
+
+        <div id="newContractModal" class="modal">
+            <div class="modal-content">
+                <h2>새 계약서 작성</h2>
+                <form id="contractForm">
+                    <div class="form-group">
+                        <label for="title">제목</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">설명</label>
+                        <textarea id="description" name="description" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expiresAt">만료일</label>
+                        <input type="date" id="expiresAt" name="expiresAt" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>서명자</label>
+                        <div id="signersContainer">
+                            <!-- Signer inputs will be dynamically added here -->
+                        </div>
+                        <button type="button" id="addSignerBtn" class="btn secondary">서명자 추가</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="files">파일 첨부</label>
+                        <input type="file" id="files" name="files" multiple>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn primary">저장</button>
+                        <button type="button" id="closeModalBtn" class="btn secondary">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/app.js"></script>
+</body>
+</html> 

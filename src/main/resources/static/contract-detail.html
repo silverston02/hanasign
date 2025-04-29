@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계약 상세 정보 - 한아서명</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">한아서명</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title" id="contractTitle">계약 제목</h2>
+                        <div class="mb-3">
+                            <span class="badge" id="statusBadge">상태</span>
+                        </div>
+                        <div class="mb-3">
+                            <h5>계약 내용</h5>
+                            <p id="contractContent">계약 내용이 여기에 표시됩니다.</p>
+                        </div>
+                        <div class="mb-3">
+                            <h5>계약 문서</h5>
+                            <a href="#" id="documentUrl" target="_blank">문서 보기</a>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                생성일: <span id="createdAt"></span><br>
+                                수정일: <span id="updatedAt"></span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">서명 정보</h5>
+                        <div id="signaturesList">
+                            <!-- 서명 정보가 여기에 동적으로 추가됩니다 -->
+                        </div>
+                        <button class="btn btn-primary mt-3" onclick="showSignModal()">서명하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 서명 모달 -->
+    <div class="modal fade" id="signModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">계약 서명</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signForm">
+                        <div class="mb-3">
+                            <label class="form-label">서명자 ID</label>
+                            <input type="text" class="form-control" id="signerId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">서명 이미지 URL</label>
+                            <input type="text" class="form-control" id="signatureUrl" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="signContract()">서명하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentContract = null;
+
+        // 페이지 로드시 계약 정보 가져오기
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const contractId = urlParams.get('id');
+            if (contractId) {
+                loadContractDetails(contractId);
+            }
+        };
+
+        // 계약 상세 정보 불러오기
+        function loadContractDetails(contractId) {
+            fetch(`/api/contracts/${contractId}`)
+                .then(response => response.json())
+                .then(contract => {
+                    currentContract = contract;
+                    
+                    document.getElementById('contractTitle').textContent = contract.contract_title;
+                    document.getElementById('contractContent').textContent = contract.contract_content;
+                    document.getElementById('documentUrl').href = contract.contract_document_url;
+                    
+                    const statusBadge = document.getElementById('statusBadge');
+                    statusBadge.textContent = contract.contract_status;
+                    statusBadge.className = `badge bg-${getStatusBadgeColor(contract.contract_status)}`;
+                    
+                    document.getElementById('createdAt').textContent = new Date(contract.contract_created_at).toLocaleString();
+                    document.getElementById('updatedAt').textContent = new Date(contract.contract_updated_at).toLocaleString();
+                    
+                    loadSignatures(contractId);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // 서명 정보 불러오기
+        function loadSignatures(contractId) {
+            fetch(`/api/contracts/${contractId}/signatures`)
+                .then(response => response.json())
+                .then(signatures => {
+                    const signaturesList = document.getElementById('signaturesList');
+                    signaturesList.innerHTML = '';
+                    
+                    signatures.forEach(signature => {
+                        const item = document.createElement('div');
+                        item.className = 'card mb-2';
+                        item.innerHTML = `
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">서명자: ${signature.signer_id}</h6>
+                                <p class="card-text">
+                                    서명일: ${new Date(signature.signed_at).toLocaleString()}<br>
+                                    IP: ${signature.ip_address}<br>
+                                    기기: ${signature.device_info}
+                                </p>
+                                <img src="${signature.signature_image_url}" alt="서명" class="img-fluid" style="max-width: 150px;">
+                            </div>
+                        `;
+                        signaturesList.appendChild(item);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // 상태에 따른 배지 색상
+        function getStatusBadgeColor(status) {
+            switch(status) {
+                case 'DRAFT': return 'secondary';
+                case 'PENDING': return 'warning';
+                case 'COMPLETED': return 'success';
+                default: return 'primary';
+            }
+        }
+
+        // 서명 모달 표시
+        function showSignModal() {
+            const modal = new bootstrap.Modal(document.getElementById('signModal'));
+            modal.show();
+        }
+
+        // 계약 서명하기
+        function signContract() {
+            const signature = {
+                signer_id: document.getElementById('signerId').value,
+                signature_image_url: document.getElementById('signatureUrl').value
+            };
+
+            fetch(`/api/contracts/${currentContract.id}/sign`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(signature)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('signModal'));
+                modal.hide();
+                loadContractDetails(currentContract.id);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html> 
