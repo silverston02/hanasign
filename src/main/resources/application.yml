@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://115.68.194.155:3306/hanyang4
+    username: to_on_admin
+    password: BgCt9kuMws9jOivFj05UcEYpauecNa076H0oontnNrUGgG13lr
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  # 포트 필요시 수정
+  server:
+    port: 3306
