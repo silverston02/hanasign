@@ -8,7 +8,8 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "contract_signatures")
+@Table(name = "contract_signatures", 
+       uniqueConstraints = @UniqueConstraint(columnNames = {"contract_id", "signer_id"}))
 @Getter
 @Setter
 @NoArgsConstructor

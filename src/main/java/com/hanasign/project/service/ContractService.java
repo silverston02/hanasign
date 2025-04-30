@@ -13,4 +13,5 @@ public interface ContractService {
     void deleteContract(Long contractId);
     ContractResponseDTO signContract(Long contractId, String signerId);
     byte[] getContractDocument(Long contractId);
+    void cleanupDuplicateSignatures();
 }

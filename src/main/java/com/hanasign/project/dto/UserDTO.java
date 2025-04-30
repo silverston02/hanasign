@@ -1,20 +1,29 @@
 package com.hanasign.project.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
     private Long id;
-    private String username;
+    private String userId;
     private String email;
     private String password;
-    private String role;
-
-    // 기본 생성자 (Lombok의 @NoArgsConstructor로 대체)
-    
-    // 모든 필드를 초기화하는 생성자 (Lombok의 @AllArgsConstructor로 대체)
-    
-    // getter와 setter는 Lombok의 @Data로 자동 생성
+    private String phoneNumber;
+    private String registrationNumber;
+    private String companyName;
+    private String representativeName;
+    private String zipCode;
+    private String address;
+    private String detailAddress;
+    private boolean isBusiness;
+    private boolean termsAgreed;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

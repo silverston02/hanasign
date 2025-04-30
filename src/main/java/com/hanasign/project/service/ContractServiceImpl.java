@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -69,11 +71,16 @@ public class ContractServiceImpl implements ContractService {
     public ContractResponseDTO signContract(Long contractId, String signerId) {
         Contract contract = findContract(contractId);
         
-        ContractSignature signature = new ContractSignature();
-        signature.setContract(contract);
-        signature.setSignerId(signerId);
-        
-        contract.getSignatures().add(signature);
+        // 이미 서명한 기록이 있는지 확인
+        boolean alreadySigned = contract.getSignatures().stream()
+            .anyMatch(signature -> signature.getSignerId().equals(signerId));
+            
+        if (!alreadySigned) {
+            ContractSignature signature = new ContractSignature();
+            signature.setContract(contract);
+            signature.setSignerId(signerId);
+            contract.getSignatures().add(signature);
+        }
         
         if (contract.getSignatures().size() == 2) { // 양쪽 모두 서명 완료
             contract.setStatus(ContractStatus.COMPLETED);
@@ -89,6 +96,27 @@ public class ContractServiceImpl implements ContractService {
         Contract contract = findContract(contractId);
         // TODO: 실제 문서 파일 로직 구현
         return new byte[0];
+    }
+
+    @Override
+    @Transactional
+    public void cleanupDuplicateSignatures() {
+        List<Contract> contracts = contractRepository.findAll();
+        for (Contract contract : contracts) {
+            // 각 계약의 서명자별로 가장 최근 서명만 남기고 나머지 삭제
+            Map<String, ContractSignature> latestSignatures = new HashMap<>();
+            for (ContractSignature signature : contract.getSignatures()) {
+                String signerId = signature.getSignerId();
+                ContractSignature existing = latestSignatures.get(signerId);
+                if (existing == null || signature.getSignedAt().isAfter(existing.getSignedAt())) {
+                    latestSignatures.put(signerId, signature);
+                }
+            }
+            
+            // 중복된 서명 삭제
+            contract.getSignatures().removeIf(signature -> 
+                !latestSignatures.containsValue(signature));
+        }
     }
 
     private Contract findContract(Long contractId) {

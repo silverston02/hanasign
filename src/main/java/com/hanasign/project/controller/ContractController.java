@@ -51,6 +51,12 @@ public class ContractController {
         return ResponseEntity.ok(contractService.signContract(contractId, signerId));
     }
 
+    @PostMapping("/cleanup")
+    public ResponseEntity<Void> cleanupDuplicateSignatures() {
+        contractService.cleanupDuplicateSignatures();
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{contractId}/document")
     public ResponseEntity<byte[]> getContractDocument(@PathVariable Long contractId) {
         return ResponseEntity.ok(contractService.getContractDocument(contractId));
