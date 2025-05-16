@@ -2,7 +2,7 @@ package com.hanasign.project.service;
 
 import com.hanasign.project.dto.*;
 import com.hanasign.project.entity.Contract;
-import com.hanasign.project.entity.ContractComment;
+import com.hanasign.project.entity.ContractCommentEntity;
 import com.hanasign.project.enums.ContractStatus;
 import com.hanasign.project.repository.ContractCommentRepository;
 import com.hanasign.project.repository.ContractRepository;
@@ -32,27 +32,17 @@ public class ContractServiceImpl implements ContractService {
         contract = contractRepository.save(contract);
 
         if (request.getComment() != null && !request.getComment().isEmpty()) {
-            ContractComment comment = new ContractComment();
-            comment.setContract(contract);
+            ContractCommentEntity comment = new ContractCommentEntity();
+            comment.setContractId(contract.getId());
             comment.setUserId(contract.getSupplierId());
             comment.setComment(request.getComment());
+            comment.setUserType(ContractCommentEntity.UserType.supplier);
             commentRepository.save(comment);
         }
 
         return contract.getId().toString();
     }
 
-    @Override
-    public void addComment(Long contractId, ContractCommentRequest request) {
-        Contract contract = contractRepository.findById(contractId)
-                .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
-
-        ContractComment comment = new ContractComment();
-        comment.setContract(contract);
-        comment.setUserId(Long.parseLong(request.getUserId()));
-        comment.setComment(request.getComment());
-        commentRepository.save(comment);
-    }
 
     @Override
     public void resendContract(Long contractId, ContractResendRequest request) {
@@ -63,10 +53,11 @@ public class ContractServiceImpl implements ContractService {
         contract.setStatus(ContractStatus.InProgress);
         contractRepository.save(contract);
 
-        ContractComment comment = new ContractComment();
-        comment.setContract(contract);
+        ContractCommentEntity comment = new ContractCommentEntity();
+        comment.setContractId(contract.getId());
         comment.setUserId(Long.parseLong(request.getUserId()));
         comment.setComment(request.getComment());
+        comment.setUserType(ContractCommentEntity.UserType.supplier);
         commentRepository.save(comment);
     }
 
@@ -85,10 +76,11 @@ public class ContractServiceImpl implements ContractService {
         contract.setStatus(ContractStatus.Cancel);
         contractRepository.save(contract);
 
-        ContractComment comment = new ContractComment();
-        comment.setContract(contract);
+        ContractCommentEntity comment = new ContractCommentEntity();
+        comment.setContractId(contract.getId());
         comment.setUserId(Long.parseLong(request.getUserId()));
         comment.setComment("[취소사유] " + request.getReason());
+        comment.setUserType(ContractCommentEntity.UserType.supplier);
         commentRepository.save(comment);
     }
 
@@ -98,10 +90,6 @@ public class ContractServiceImpl implements ContractService {
                 .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
     }
 
-    @Override
-    public List<ContractComment> getComments(Long contractId) {
-        return commentRepository.findByContract_Id(contractId);
-    }
 
     @Override
     public List<Contract> getContracts(String supplierId, String clientId, String status) {

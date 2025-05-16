@@ -2,7 +2,6 @@ package com.hanasign.project.controller;
 
 import com.hanasign.project.dto.*;
 import com.hanasign.project.entity.Contract;
-import com.hanasign.project.entity.ContractComment;
 import com.hanasign.project.service.ContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +22,6 @@ public class ContractController {
         return ResponseEntity.ok(contractId);
     }
 
-    @PostMapping("/{contractId}/comments")
-    public ResponseEntity<Void> addComment(@PathVariable String contractId, @RequestBody ContractCommentRequest request) {
-        contractService.addComment(Long.valueOf(contractId), request);
-        return ResponseEntity.ok().build();
-    }
 
     @PatchMapping("/{contractId}/resend")
     public ResponseEntity<Void> resendContract(@PathVariable String contractId, @RequestBody ContractResendRequest request) {
@@ -52,10 +46,6 @@ public class ContractController {
         return ResponseEntity.ok(contractService.getContractById(Long.valueOf(contractId)));
     }
 
-    @GetMapping("/{contractId}/comments")
-    public ResponseEntity<List<ContractComment>> getComments(@PathVariable String contractId) {
-        return ResponseEntity.ok(contractService.getComments(Long.valueOf(contractId)));
-    }
 
     @GetMapping
     public ResponseEntity<List<Contract>> getContracts(@RequestParam(required = false) String supplierId,
