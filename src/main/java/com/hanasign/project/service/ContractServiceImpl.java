@@ -1,6 +1,9 @@
 package com.hanasign.project.service;
 
-import com.hanasign.project.dto.*;
+import com.hanasign.project.dto.contractdto.ContractCancelRequest;
+import com.hanasign.project.dto.contractdto.ContractCreateRequest;
+import com.hanasign.project.dto.contractdto.ContractResendRequest;
+import com.hanasign.project.dto.contractdto.ContractUserRequest;
 import com.hanasign.project.entity.Contract;
 import com.hanasign.project.entity.ContractCommentEntity;
 import com.hanasign.project.enums.ContractStatus;
@@ -19,6 +22,7 @@ public class ContractServiceImpl implements ContractService {
 
     private final ContractRepository contractRepository;
     private final ContractCommentRepository commentRepository;
+    private final AttachmentService attachmentService;
 
     @Override
     public String createContract(ContractCreateRequest request) {
@@ -26,10 +30,11 @@ public class ContractServiceImpl implements ContractService {
         contract.setTitle(request.getTitle());
         contract.setSupplierId(Long.parseLong(request.getSupplierId()));
         contract.setClientId(Long.parseLong(request.getClientId()));
-        contract.setStatus(ContractStatus.Waiting);
-        contract.setAttachments(String.join(",", request.getAttachments()));
-
+        contract.setStatus(ContractStatus.WAITING);
+        contract.setAttachments(String.join(",", request.getAttachments())); // 파일 여러개 일 수 있어 ","로 구분
         contract = contractRepository.save(contract);
+
+
 
         if (request.getComment() != null && !request.getComment().isEmpty()) {
             ContractCommentEntity comment = new ContractCommentEntity();
@@ -50,7 +55,7 @@ public class ContractServiceImpl implements ContractService {
                 .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
 
         contract.setAttachments(String.join(",", request.getAttachments()));
-        contract.setStatus(ContractStatus.InProgress);
+        contract.setStatus(ContractStatus.INPROGRESS);
         contractRepository.save(contract);
 
         ContractCommentEntity comment = new ContractCommentEntity();
@@ -65,7 +70,7 @@ public class ContractServiceImpl implements ContractService {
     public void completeContract(Long contractId, ContractUserRequest request) {
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
-        contract.setStatus(ContractStatus.Complete);
+        contract.setStatus(ContractStatus.COMPLETE);
         contractRepository.save(contract);
     }
 
@@ -73,7 +78,7 @@ public class ContractServiceImpl implements ContractService {
     public void cancelContract(Long contractId, ContractCancelRequest request) {
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
-        contract.setStatus(ContractStatus.Cancel);
+        contract.setStatus(ContractStatus.CANCEL);
         contractRepository.save(contract);
 
         ContractCommentEntity comment = new ContractCommentEntity();
