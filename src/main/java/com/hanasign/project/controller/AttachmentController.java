@@ -1,6 +1,7 @@
 package com.hanasign.project.controller;
 //API 요청 및 응답 처리
 
+import com.hanasign.project.controller.abs.BaseController;
 import com.hanasign.project.dto.AttachmentRequestDto;
 import com.hanasign.project.dto.AttachmentResponseDto;
 import com.hanasign.project.service.AttachmentService;
@@ -10,10 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/attachments")
 @RequiredArgsConstructor
-public class AttachmentController {
+public class AttachmentController extends BaseController {
 
     private final AttachmentService attachmentService;
 
@@ -34,12 +37,14 @@ public class AttachmentController {
 
     // 파일 정보 조회
     @GetMapping("/{id}")
-    public ResponseEntity<AttachmentResponseDto> getFileInfo(@PathVariable String id) {
+    public ResponseEntity<Map<String, Object>> getFileInfo(@PathVariable String id, @RequestHeader("Authorization") String token) {
+
         try {
+            this.logger.info("파일 정보 조회 요청: id={}, token={}", id, token);
             AttachmentResponseDto responseDto = attachmentService.getFileInfo(id);
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+            return createResponseEntity(HttpStatus.OK, "파일 정보 조회 성공", responseDto);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return createResponseEntity(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다.", null);
         }
     }
 
