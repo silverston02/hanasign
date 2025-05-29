@@ -78,6 +78,7 @@ public class ContractServiceImpl implements ContractService {
     public void cancelContract(Long contractId, ContractCancelRequest request) {
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
+
         contract.setStatus(ContractStatus.CANCEL);
         contractRepository.save(contract);
 
