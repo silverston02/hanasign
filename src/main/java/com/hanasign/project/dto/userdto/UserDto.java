@@ -1,5 +1,5 @@
 // 2. UserDto
-package com.hanasign.project.dto;
+package com.hanasign.project.dto.userdto;
 
 import com.hanasign.project.entity.User;
 import lombok.*;

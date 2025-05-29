@@ -38,13 +38,17 @@ public class AttachmentController extends BaseController {
 
     /*
     // 파일 정보 조회
+
     @GetMapping("/get/{id}")
     public ResponseEntity<Map<String, Object>> getFileInfo(@PathVariable String id) {
         try {
+            this.logger.info("파일 정보 조회 요청: id={}, token={}", id, token);
             AttachmentResponseDto responseDto = attachmentService.getFileInfo(id);
+
             return createResponseEntity(HttpStatus.OK, "파일 조회 성공", responseDto);
         } catch (Exception e) {
             return createResponseEntity(HttpStatus.NOT_FOUND, "파일 조회 실패", null);
+
         }
     }*/
 
