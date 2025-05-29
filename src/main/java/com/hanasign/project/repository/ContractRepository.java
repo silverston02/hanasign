@@ -18,9 +18,9 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     
     Optional<List<Contract>> findByClientIdAndStatusOrderByCreatedAtDesc(Long clientId, ContractStatus status);
     
-    /*// 기존 메서드들
+
     List<Contract> findBySupplierId(Long supplierId);
     List<Contract> findByClientId(Long clientId);
     List<Contract> findBySupplierIdAndStatus(Long supplierId, ContractStatus status);
-    List<Contract> findByClientIdAndStatus(Long clientId, ContractStatus status);*/
+    List<Contract> findByClientIdAndStatus(Long clientId, ContractStatus status);
 }

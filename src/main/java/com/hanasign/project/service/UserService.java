@@ -1,7 +1,7 @@
 package com.hanasign.project.service;
 
-import com.hanasign.project.dto.LoginRequestDto;
-import com.hanasign.project.dto.UserDto;
+import com.hanasign.project.dto.userdto.LoginRequestDto;
+import com.hanasign.project.dto.userdto.UserDto;
 import com.hanasign.project.entity.User;
 import com.hanasign.project.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
