@@ -1,4 +1,4 @@
-package com.hanasign.project.dto;
+package com.hanasign.project.dto.AttachmentDto;
 //파일 조회할 때 데이터 반환
 //클라이언트(사용자)한테 저장된 파일 정보를 보여줄 때 사용하는 DTO
 

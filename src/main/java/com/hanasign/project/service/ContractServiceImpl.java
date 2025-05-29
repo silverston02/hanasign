@@ -26,7 +26,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setTitle(request.getTitle());
         contract.setSupplierId(Long.parseLong(request.getSupplierId()));
         contract.setClientId(Long.parseLong(request.getClientId()));
-        contract.setStatus(ContractStatus.Waiting);
+        contract.setStatus(ContractStatus.WAITING);
         contract.setAttachments(String.join(",", request.getAttachments()));
 
         contract = contractRepository.save(contract);
@@ -50,7 +50,7 @@ public class ContractServiceImpl implements ContractService {
                 .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
 
         contract.setAttachments(String.join(",", request.getAttachments()));
-        contract.setStatus(ContractStatus.InProgress);
+        contract.setStatus(ContractStatus.INPROGRESS);
         contractRepository.save(contract);
 
         ContractCommentEntity comment = new ContractCommentEntity();
@@ -65,7 +65,7 @@ public class ContractServiceImpl implements ContractService {
     public void completeContract(Long contractId, ContractUserRequest request) {
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
-        contract.setStatus(ContractStatus.Complete);
+        contract.setStatus(ContractStatus.COMPLETE);
         contractRepository.save(contract);
     }
 
@@ -73,7 +73,7 @@ public class ContractServiceImpl implements ContractService {
     public void cancelContract(Long contractId, ContractCancelRequest request) {
         Contract contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
-        contract.setStatus(ContractStatus.Cancel);
+        contract.setStatus(ContractStatus.CANCLE);
         contractRepository.save(contract);
 
         ContractCommentEntity comment = new ContractCommentEntity();
