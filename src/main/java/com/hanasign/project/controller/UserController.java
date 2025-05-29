@@ -1,8 +1,8 @@
 // 6. UserController
 package com.hanasign.project.controller;
 
-import com.hanasign.project.dto.LoginRequestDto;
-import com.hanasign.project.dto.UserDto;
+import com.hanasign.project.dto.userdto.LoginRequestDto;
+import com.hanasign.project.dto.userdto.UserDto;
 import com.hanasign.project.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

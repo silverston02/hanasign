@@ -1,5 +1,6 @@
 package com.hanasign.project.entity;
 
+import com.hanasign.project.enums.ContractStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ContractHistoryEntity {
 
     @Id
@@ -49,9 +51,5 @@ public class ContractHistoryEntity {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
-    }
-
-    public enum ContractStatus {
-        Waiting, InPrograss, Complete, Cancel
     }
 }
