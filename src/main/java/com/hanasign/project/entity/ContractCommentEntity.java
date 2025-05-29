@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ContractCommentEntity {
 
     @Id
@@ -48,6 +49,6 @@ public class ContractCommentEntity {
     }
 
     public enum UserType {
-        supplier, client
+        SUPPLIER, CLIENT
     }
 }

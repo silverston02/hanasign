@@ -36,7 +36,7 @@ public class ContractServiceImpl implements ContractService {
             comment.setContractId(contract.getId());
             comment.setUserId(contract.getSupplierId());
             comment.setComment(request.getComment());
-            comment.setUserType(ContractCommentEntity.UserType.supplier);
+            comment.setUserType(ContractCommentEntity.UserType.SUPPLIER);
             commentRepository.save(comment);
         }
 
@@ -57,7 +57,7 @@ public class ContractServiceImpl implements ContractService {
         comment.setContractId(contract.getId());
         comment.setUserId(Long.parseLong(request.getUserId()));
         comment.setComment(request.getComment());
-        comment.setUserType(ContractCommentEntity.UserType.supplier);
+        comment.setUserType(ContractCommentEntity.UserType.SUPPLIER);
         commentRepository.save(comment);
     }
 
@@ -80,7 +80,7 @@ public class ContractServiceImpl implements ContractService {
         comment.setContractId(contract.getId());
         comment.setUserId(Long.parseLong(request.getUserId()));
         comment.setComment("[취소사유] " + request.getReason());
-        comment.setUserType(ContractCommentEntity.UserType.supplier);
+        comment.setUserType(ContractCommentEntity.UserType.SUPPLIER);
         commentRepository.save(comment);
     }
 
