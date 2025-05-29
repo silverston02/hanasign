@@ -1,6 +1,9 @@
 package com.hanasign.project.controller;
 
-import com.hanasign.project.dto.*;
+import com.hanasign.project.dto.contractdto.ContractCancelRequest;
+import com.hanasign.project.dto.contractdto.ContractCreateRequest;
+import com.hanasign.project.dto.contractdto.ContractResendRequest;
+import com.hanasign.project.dto.contractdto.ContractUserRequest;
 import com.hanasign.project.entity.Contract;
 import com.hanasign.project.service.ContractService;
 import lombok.RequiredArgsConstructor;
@@ -16,32 +19,32 @@ public class ContractController {
 
     private final ContractService contractService;
 
-    @PostMapping
+    @PostMapping("contract-create")
     public ResponseEntity<String> createContract(@RequestBody ContractCreateRequest request) {
         String contractId = contractService.createContract(request);
         return ResponseEntity.ok(contractId);
     }
 
 
-    @PatchMapping("/{contractId}/resend")
+    @PatchMapping("/contract-resend")
     public ResponseEntity<Void> resendContract(@PathVariable String contractId, @RequestBody ContractResendRequest request) {
         contractService.resendContract(Long.valueOf(contractId), request);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{contractId}/complete")
+    @PatchMapping("/contract-complete")
     public ResponseEntity<Void> completeContract(@PathVariable String contractId, @RequestBody ContractUserRequest request) {
         contractService.completeContract(Long.valueOf(contractId), request);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{contractId}/cancel")
+    @PatchMapping("/contract-cancel")
     public ResponseEntity<Void> cancelContract(@PathVariable String contractId, @RequestBody ContractCancelRequest request) {
-        contractService.cancelContract(Long.valueOf(contractId), request);
+         contractService.cancelContract(Long.valueOf(contractId), request);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{contractId}")
+    @GetMapping("/contract-find/{contractId}")
     public ResponseEntity<Contract> getContract(@PathVariable String contractId) {
         return ResponseEntity.ok(contractService.getContractById(Long.valueOf(contractId)));
     }
