@@ -1,5 +1,5 @@
 // 3. LoginRequestDto
-package com.hanasign.project.dto;
+package com.hanasign.project.dto.userdto;
 
 import lombok.*;
 
