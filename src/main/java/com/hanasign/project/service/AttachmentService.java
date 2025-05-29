@@ -1,7 +1,7 @@
   package com.hanasign.project.service;
 
-import com.hanasign.project.dto.AttachmentRequestDto;
-import com.hanasign.project.dto.AttachmentResponseDto;
+import com.hanasign.project.dto.AttachmentDto.AttachmentRequestDto;
+import com.hanasign.project.dto.AttachmentDto.AttachmentResponseDto;
 import com.hanasign.project.entity.Attachment;
 import com.hanasign.project.repository.AttachmentRepository;
 import lombok.RequiredArgsConstructor;
