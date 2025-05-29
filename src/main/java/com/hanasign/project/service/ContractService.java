@@ -1,9 +1,9 @@
 package com.hanasign.project.service;
 
-import com.hanasign.project.dto.ContractCancelRequest;
-import com.hanasign.project.dto.ContractCreateRequest;
-import com.hanasign.project.dto.ContractResendRequest;
-import com.hanasign.project.dto.ContractUserRequest;
+import com.hanasign.project.dto.contractdto.ContractCancelRequest;
+import com.hanasign.project.dto.contractdto.ContractCreateRequest;
+import com.hanasign.project.dto.contractdto.ContractResendRequest;
+import com.hanasign.project.dto.contractdto.ContractUserRequest;
 import com.hanasign.project.entity.Contract;
 
 import java.util.List;

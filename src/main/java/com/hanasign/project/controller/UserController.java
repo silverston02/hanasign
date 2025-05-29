@@ -1,40 +1,33 @@
-// UserController.java
+// 6. UserController
 package com.hanasign.project.controller;
 
-import com.hanasign.project.controller.abs.BaseController;
 import com.hanasign.project.dto.userdto.LoginRequestDto;
 import com.hanasign.project.dto.userdto.UserDto;
-import com.hanasign.project.dto.UserResponseDto;
 import com.hanasign.project.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class UserController extends BaseController {
+public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody UserDto userDto) {
-        return createResponseEntity(HttpStatus.CREATED, "success", userService.register(userDto));
+    @PostMapping
+    public ResponseEntity<UserDto> register(@RequestBody UserDto userDto) {
+        return ResponseEntity.ok(userService.register(userDto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequestDto loginDto) {
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginDto) {
         boolean success = userService.login(loginDto);
-        return success
-                ? createResponseEntity(HttpStatus.OK, "success", null)
-                : createResponseEntity(HttpStatus.UNAUTHORIZED, "error", null);
+        return success ? ResponseEntity.ok("로그인 성공") : ResponseEntity.status(401).body("로그인 실패");
     }
 
-    @GetMapping("/me/{id}")
-    public ResponseEntity<Map<String, Object>> getUser(@PathVariable Long id) {
-        return createResponseEntity(HttpStatus.OK, "success", userService.getUserById(id));
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 }

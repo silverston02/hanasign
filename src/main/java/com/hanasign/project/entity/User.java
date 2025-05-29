@@ -25,7 +25,7 @@ public class User {
     @Column(name = "email", length = 50)
     private String email; // 로그인 아이디
 
-    @Column(name = "pw", length = 50)
+    @Column(name = "pw", length = 100)
     private String pw; // 비밀번호
 
     @Column(name = "phon_number", length = 50)
