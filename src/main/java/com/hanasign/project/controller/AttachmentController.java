@@ -20,6 +20,7 @@ public class AttachmentController extends BaseController {
 
     private final AttachmentService attachmentService;
 
+
     // 파일 업로드
     @PostMapping("/upload")
     public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -35,15 +36,23 @@ public class AttachmentController extends BaseController {
         }
     }
 
+    /*
     // 파일 정보 조회
     @GetMapping("/get/{id}")
     public ResponseEntity<Map<String, Object>> getFileInfo(@PathVariable String id) {
         try {
             AttachmentResponseDto responseDto = attachmentService.getFileInfo(id);
-            return createResponseEntity(HttpStatus.OK, "잉", responseDto);
+            return createResponseEntity(HttpStatus.OK, "파일 조회 성공", responseDto);
         } catch (Exception e) {
             return createResponseEntity(HttpStatus.NOT_FOUND, "파일 조회 실패", null);
         }
+    }*/
+
+    // 파일 정보 조회
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Map<String, Object>> getFileInfo(@PathVariable String id) {
+        AttachmentResponseDto responseDto = attachmentService.getFileInfo(id);
+        return createResponseEntity(HttpStatus.OK, "파일 조회 성공", responseDto);
     }
 
     // 파일 삭제
@@ -59,5 +68,6 @@ public class AttachmentController extends BaseController {
         }
     }
 
+    // 파일 다운로드
 
 }
