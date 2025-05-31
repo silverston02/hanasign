@@ -1,4 +1,4 @@
-package com.hanasign.project.dto;
+package com.hanasign.project.dto.AttachmentDto;
 //파일 업로드할 때 데이터 받기
 
 import lombok.Getter;
