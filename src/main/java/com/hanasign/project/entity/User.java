@@ -1,6 +1,7 @@
 package com.hanasign.project.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -41,4 +42,13 @@ public class User {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt; // 삭제일 (null이면 미삭제)
+
+    @NotNull
+    @Column(name = "company_id", nullable = false)
+    private Long companyId; // 회사 ID
+
+    @NotNull
+    @Column(name = "team_id", nullable = false)
+    private Long teamId;
+
 }

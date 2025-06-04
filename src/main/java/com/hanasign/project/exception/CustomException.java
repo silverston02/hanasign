@@ -2,7 +2,7 @@ package com.hanasign.project.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class CustomException extends java.lang.Exception {
+public class CustomException extends RuntimeException {
     private final String errorCode;
     private final String errorMessage;
     private final HttpStatus httpStatus;
