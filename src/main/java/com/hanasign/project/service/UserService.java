@@ -12,8 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class
-UserService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder; // PasswordEncoder 추가
@@ -29,6 +28,8 @@ UserService {
                 dto.getEmail(),
                 encryptedPassword, // 암호화된 비밀번호 저장
                 dto.getPhonNumber(),
+                null,
+                null,
                 null,
                 null,
                 null
