@@ -35,6 +35,12 @@ public class Contract {
     @Column(name = "supplier")
     private Long supplierId;
 
+    @Column(name = "client_accepted")
+    private Boolean clientAccepted = false;
+
+    @Column(name = "supplier_accepted")
+    private Boolean supplierAccepted = false;
+
     @Lob
     private String attachments; // JSON 문자열 리스트 형태로 첨부파일 UUID 저장
 
