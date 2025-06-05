@@ -1,6 +1,6 @@
 package com.hanasign.project.enums;
 
-public enum ContractStatus {
+public enum  ContractStatus {
     WAITING,
     INPROGRESS,
     COMPLETE,
