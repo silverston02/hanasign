@@ -1,4 +1,4 @@
-package com.hanasign.project.dto.contractdto;
+package com.hanasign.project.dto.contractdto.request;
 
 import lombok.Data;
 
