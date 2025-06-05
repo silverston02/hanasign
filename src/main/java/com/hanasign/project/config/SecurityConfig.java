@@ -23,8 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomUserDetailsService customUserDetailsService;
-    private final JwtFilter jwtFilter;
+    private final CustomUserDetailsService customUserDetailsService;  // 사용자 정보 로드 서비스
+    private final JwtFilter jwtFilter; // JWT 필터
 
     /**
      * 비밀번호 암호화용 PasswordEncoder
