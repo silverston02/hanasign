@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class BaseController {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     protected ResponseEntity<Map<String, Object>> createResponseEntity(HttpStatus status, String message, Object data) {
