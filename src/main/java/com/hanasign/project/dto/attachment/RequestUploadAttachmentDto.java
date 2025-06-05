@@ -1,4 +1,4 @@
-package com.hanasign.project.dto.AttachmentDto;
+package com.hanasign.project.dto.attachment;
 //파일 업로드할 때 데이터 받기
 
 import lombok.Getter;
@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 
-public class AttachmentRequestDto {
+public class RequestUploadAttachmentDto {
     private MultipartFile file; // 실제 업로드할 파일
     // 파일 이름, 경로, 타입은 서버에서 자동으로 추출되게 함.
 }

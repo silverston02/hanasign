@@ -11,6 +11,12 @@ public class Exceptions {
 
     public static final CustomException TEAM_NOT_FOUND = new CustomException(HttpStatus.NOT_FOUND, "50001", "부서를 찾을 수 없습니다.");
 
+
+
+
+    public static final CustomException WRONG_EXTENSIONS = new CustomException(HttpStatus.BAD_REQUEST, "31001", "지원하지 않는 파일 형식");
+    public static final CustomException FILE_NOT_FOUND = new CustomException(HttpStatus.BAD_REQUEST, "31002", "일치하는 파일이 없습니다. ");
+
     //  Comment 관련 예외 코드
     public static final CustomException COMMENT_CONTENT_REQUIRED =
             new CustomException(HttpStatus.BAD_REQUEST, "32001", "댓글 내용을 입력해주세요.");
@@ -36,5 +42,6 @@ public class Exceptions {
 
     public static final CustomException HISTORY_CONTRACT_NOT_FOUND =
             new CustomException(HttpStatus.NOT_FOUND, "33004", "해당 계약을 찾을 수 없습니다.");
+
 
 }
