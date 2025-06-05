@@ -1,7 +1,7 @@
-package com.hanasign.project.controller;
+package com.hanasign.project.controller.login;
 
 import com.hanasign.project.controller.abs.BaseController;
-import com.hanasign.project.dto.login.LoginDto;
+import com.hanasign.project.dto.login.RequestLoginDto;
 import com.hanasign.project.exception.CustomException;
 import com.hanasign.project.service.login.LoginService;
 import com.hanasign.project.util.JwtUtil;
@@ -36,7 +36,7 @@ public class LoginController extends BaseController {
      * - 이메일/비밀번호로 인증 후 JWT 토큰 발급
      */
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody @Valid LoginDto body) throws CustomException {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody @Valid RequestLoginDto body) throws CustomException {
         //throw Exceptions.USER_NOT_FOUND;
         UsernamePasswordAuthenticationToken authRequest =
                 new UsernamePasswordAuthenticationToken(body.getEmail(), body.getPassword());
@@ -54,9 +54,9 @@ public class LoginController extends BaseController {
      * 회원가입 요청 처리
      */
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody LoginDto loginDto ) {
-        loginService.register(loginDto);
-        this.logger.info("LoginDto: {}", loginDto);
+    public ResponseEntity<String> register(@RequestBody RequestLoginDto requestLoginDto) {
+        loginService.register(requestLoginDto);
+        this.logger.info("RequestLoginDto: {}", requestLoginDto);
         return ResponseEntity.ok("회원가입 성공");
     }
 

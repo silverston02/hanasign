@@ -9,4 +9,6 @@ public class Exceptions {
 
     public static final CustomException COMPANY_NOT_FOUND = new CustomException(HttpStatus.NOT_FOUND, "40001", "회사를 찾을 수 없습니다.");
 
+    public static final CustomException TEAM_NOT_FOUND = new CustomException(HttpStatus.NOT_FOUND, "50001", "부서를 찾을 수 없습니다.");
+
 }

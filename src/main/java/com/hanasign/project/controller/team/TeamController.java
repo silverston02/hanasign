@@ -1,0 +1,53 @@
+package com.hanasign.project.controller.team;
+
+import com.hanasign.project.controller.abs.BaseController;
+import com.hanasign.project.dto.team.RequestCreateTeamDto;
+import com.hanasign.project.dto.team.RequestUpdateTeamDto;
+import com.hanasign.project.dto.team.ResponseCreateTeamDto;
+import com.hanasign.project.entity.Team;
+import com.hanasign.project.service.team.TeamService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/team")
+@RequiredArgsConstructor
+public class TeamController extends BaseController {
+    private final TeamService teamService;
+
+    // 팀 부서 단일 정보 조회 (ID로)
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
+        Team team = teamService.findById(id);
+        return createResponseEntity(HttpStatus.OK, "부서 정보 조회 성공", team);
+    }
+
+    // 팀 부서 정보 생성
+    @PostMapping("/create")
+    public ResponseEntity<Map<String, Object>> create(@RequestBody RequestCreateTeamDto requestCreateTeamDto) {
+        Team team = teamService.create(requestCreateTeamDto);
+        ResponseCreateTeamDto responseCreateTeamDto = ResponseCreateTeamDto.builder()
+                .id(team.getId())
+                .teamName(team.getTeamName())
+                .build();
+        return createResponseEntity(HttpStatus.CREATED, "부서 정보 생성 성공", requestCreateTeamDto);
+    }
+
+    // 팀 부서 정보 업데이트
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Map<String, Object>> update(@PathVariable Long id, @RequestBody RequestUpdateTeamDto requestUpdateTeamDto) {
+        Team team = teamService.update(id, requestUpdateTeamDto);
+        return createResponseEntity(HttpStatus.OK, "부서 정보 업데이트 성공", team);
+    }
+
+    // 팀 부서 정보 삭제
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
+        teamService.delete(id);
+        return createResponseEntity(HttpStatus.OK, "부서 정보 삭제 성공", null);
+    }
+}

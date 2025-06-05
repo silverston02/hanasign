@@ -1,4 +1,4 @@
-package com.hanasign.project.repository;
+package com.hanasign.project.repository.company;
 
 import com.hanasign.project.entity.Company;
 import org.springframework.data.jpa.repository.JpaRepository;

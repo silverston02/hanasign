@@ -8,13 +8,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginDto {
+public class RequestLoginDto {
     @Email
     @NotBlank
     @NotEmpty
-    private String email;
+    private String email;   // 이메일
     @NotEmpty
     @NotBlank
-    private String password;
-
+    private String password;   // 비밀번호
 }
