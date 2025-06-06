@@ -1,5 +1,6 @@
 package com.hanasign.project.entity;
 
+import com.hanasign.project.enums.UserType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -49,6 +50,10 @@ public class User {
 
     @NotNull
     @Column(name = "team_id", nullable = false)
-    private Long teamId;
+    private Long teamId; // 팀 ID
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private UserType type; // 유저 타입 (ADMIN, USER 등)
 
 }

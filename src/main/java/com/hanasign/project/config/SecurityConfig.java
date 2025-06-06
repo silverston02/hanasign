@@ -26,36 +26,27 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;  // 사용자 정보 로드 서비스
     private final JwtFilter jwtFilter; // JWT 필터
 
-    /**
-     * 비밀번호 암호화용 PasswordEncoder
-     */
+    //  사용자 정보 로드 서비스 빈 등록
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * AuthenticationManager 생성 (Spring Security 최신 방식)
-     */
+    // 사용자 정보 로드 서비스 빈 등록
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    /**
-     * SecurityFilterChain 설정
-     * - 세션 미사용 (stateless)
-     * - /api/auth/**는 인증 없이 허용
-     * - 나머지는 인증 필요
-     * - JWT 필터 추가
-     */
+    // JWT 필터 빈 등록
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/register/").permitAll()
+                        .requestMatchers("/api/auth/login/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/"))
