@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -37,6 +38,24 @@ public class CompanyService {
         }
         return company.get();
     }
+
+    // 회사명으로 회사 조회
+//    public Company findByName(String name) {
+//        Optional<Company> company = companyRepository.findByNameAndDeletedAtIsNull(name);
+//        if (company.isEmpty()) {
+//            throw Exceptions.COMPANY_NOT_FOUND;
+//        }
+//        return company.get();
+//    }
+    public List<Company> findByNameLike(String keyword) {
+        List<Company> companies = companyRepository.findByNameContainingAndDeletedAtIsNull(keyword);
+//        if (companies.isEmpty()) {
+//            throw Exceptions.COMPANY_NOT_FOUND;
+//        }
+        return companies;
+    }
+
+
     // 회사 정보 업데이트
     public Company update(Long id, RequestUpdateCompanyDto requestUpdateCompanyDto) {
         Optional<Company> company = companyRepository.findByIdAndDeletedAtIsNull(id);
