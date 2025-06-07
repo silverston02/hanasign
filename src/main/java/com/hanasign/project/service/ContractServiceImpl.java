@@ -13,11 +13,13 @@ import com.hanasign.project.exception.CustomException;
 import com.hanasign.project.repository.ContractCommentRepository;
 import com.hanasign.project.repository.ContractRepository;
 import com.hanasign.project.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import com.hanasign.project.exception.Exceptions;
 
 import java.util.List;
@@ -33,6 +35,7 @@ public class ContractServiceImpl implements ContractService {
     private final ObjectMapper objectMapper = new ObjectMapper(); // Jackson ObjectMapper 추가
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public String createContract(ContractCreateRequest request) throws CustomException {
         // 공급자 검증
         Long supplierId;
@@ -71,11 +74,7 @@ public class ContractServiceImpl implements ContractService {
             contractRepository.save(contract); // 첨부파일 정보 저장
         } catch (JsonProcessingException e) {
             this.logger.error("첨부파일을 찾지 못하였습니다: {}", e.getMessage());
-            throw new CustomException(
-                org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR, 
-                "30001", 
-                "첨부파일 정보 변환 중 오류가 발생했습니다."
-            );
+            throw Exceptions.FILE_TRANS_ERROR;
         }
 
         // 코멘트 추가
@@ -93,6 +92,7 @@ public class ContractServiceImpl implements ContractService {
 
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     public void resendContract(Long contractId, ContractResendRequest request) {
         try {
             // 계약 검증
@@ -117,11 +117,7 @@ public class ContractServiceImpl implements ContractService {
                 contractRepository.save(contract);
             } catch (JsonProcessingException e) {
                 this.logger.error("Error converting attachment information: {}", e.getMessage());
-                throw new CustomException(
-                    org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR, 
-                    "30001", 
-                    "첨부파일 정보 변환 중 오류가 발생했습니다."
-                );
+                throw Exceptions.FILE_TRANS_ERROR;
             }
 
             ContractCommentEntity comment = new ContractCommentEntity();
@@ -138,6 +134,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, timeout = 30)
     public void completeContract(Long contractId, ContractUserRequest request) {
         try {
             // 계약 검증
@@ -166,11 +163,7 @@ public class ContractServiceImpl implements ContractService {
 
             if (!isClient && !isSupplier) {
                 this.logger.error("User is neither client nor supplier for this contract: {}", userId);
-                throw new CustomException(
-                    org.springframework.http.HttpStatus.BAD_REQUEST, 
-                    "30002", 
-                    "사용자가 이 계약의 클라이언트나 공급자가 아닙니다."
-                );
+                throw Exceptions.CONTRACT_USER_NOT_FOUND;
             }
 
             // 사용자 유형에 따라 수락 상태 업데이트
@@ -202,6 +195,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void cancelContract(Long contractId, ContractCancelRequest request) {
         try {
             // 계약 검증
@@ -242,6 +236,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Contract> getContracts(String supplierId, String clientId, String status) {
         try {
             Long supplierIdLong = null;

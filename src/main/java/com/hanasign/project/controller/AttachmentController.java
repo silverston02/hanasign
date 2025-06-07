@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -120,6 +121,18 @@ public class AttachmentController extends BaseController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    //파일 다중업로드
+    @PostMapping("/multi-upload")
+    public ResponseEntity<Map<String, Object>> uploadMultipleFiles(@RequestParam("files") List<MultipartFile> files) throws IOException {
+        try {
+            List<ResponseUploadAttachmentDto> responses = attachmentService.uploadFiles(files);
+            return createResponseEntity(HttpStatus.CREATED, "여러 파일 업로드 완료", responses);
+        } catch (CustomException e) {
+            return createResponseEntity(e.getStatus(), e.getMessage(), null);
+        }
+    }
+
 
 
 //    //파일 다운로드
