@@ -25,4 +25,8 @@ public class CustomException extends RuntimeException {
     public String getErrorMessage() {
         return errorMessage;
     }
+
+
+    //이거 필요한거임?
+    public HttpStatus getStatus() {return httpStatus;}
 }

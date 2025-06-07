@@ -1,5 +1,6 @@
 package com.hanasign.project.entity;
 
+import com.hanasign.project.enums.UserType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -43,12 +44,14 @@ public class User {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt; // 삭제일 (null이면 미삭제)
 
-    @NotNull
-    @Column(name = "company_id", nullable = false)
+    @Column(name = "company_id")
     private Long companyId; // 회사 ID
 
-    @NotNull
-    @Column(name = "team_id", nullable = false)
-    private Long teamId;
+    @Column(name = "team_id")
+    private Long teamId; // 팀 ID
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private UserType type; // 유저 타입 (ADMIN, USER 등)
 
 }

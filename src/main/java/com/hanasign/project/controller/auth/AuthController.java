@@ -1,9 +1,11 @@
-package com.hanasign.project.controller.login;
+package com.hanasign.project.controller.auth;
 
 import com.hanasign.project.controller.abs.BaseController;
-import com.hanasign.project.dto.login.RequestLoginDto;
+import com.hanasign.project.dto.auth.RequestLoginDto;
+import com.hanasign.project.dto.auth.RequestReginsterAdminDto;
+import com.hanasign.project.dto.auth.RequestRegisterUserDto;
 import com.hanasign.project.exception.CustomException;
-import com.hanasign.project.service.login.LoginService;
+import com.hanasign.project.service.auth.AuthService;
 import com.hanasign.project.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +28,34 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class LoginController extends BaseController {
+public class AuthController extends BaseController {
     private final AuthenticationManager authenticationManager;
-    private final LoginService loginService;
+    private final AuthService authService;
     private final JwtUtil jwtUtil;
+
+    /**
+     * 일반 회원가입 요청 처리
+     */
+    @PostMapping("/register/user")
+    public ResponseEntity<Map<String, Object>> registerUser(@RequestBody RequestRegisterUserDto requestRegisterUserDto) {
+        authService.registerUser(requestRegisterUserDto);
+        return createResponseEntity(
+                HttpStatus.OK,
+                "일반회원 회원가입 성공",
+                null);
+    }
+
+    /**
+     * 관리자 회원가입 요청 처리
+     */
+    @PostMapping("/register/admin")
+    public ResponseEntity<Map<String, Object>> registerAdmin(@RequestBody RequestReginsterAdminDto requestReginsterAdminDto) {
+        authService.registerAdmin(requestReginsterAdminDto);
+        return createResponseEntity(
+                HttpStatus.OK,
+                "관리자 회원가입 성공",
+                null);
+    }
 
     /**
      * 로그인 요청 처리
@@ -50,14 +76,6 @@ public class LoginController extends BaseController {
                 token);
     }
 
-    /**
-     * 회원가입 요청 처리
-     */
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RequestLoginDto requestLoginDto) {
-        loginService.register(requestLoginDto);
-        this.logger.info("RequestLoginDto: {}", requestLoginDto);
-        return ResponseEntity.ok("회원가입 성공");
-    }
+
 
 }
