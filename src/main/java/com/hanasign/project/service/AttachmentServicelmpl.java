@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hanasign.project.exception.Exceptions;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
@@ -42,6 +43,7 @@ public class AttachmentServicelmpl implements AttachmentService {
             String uuid = UUID.randomUUID().toString();
             String originalFileName = file.getOriginalFilename();
             String extension = "";
+
 
             if (originalFileName != null && originalFileName.contains(".")) {
                 extension = originalFileName.substring(originalFileName.lastIndexOf("."));
@@ -90,6 +92,48 @@ public class AttachmentServicelmpl implements AttachmentService {
             throw e;
         }
 
+    }
+
+    public List<ResponseUploadAttachmentDto> uploadFiles(List<MultipartFile> files) throws CustomException, IOException {
+        List<ResponseUploadAttachmentDto> resultList = new ArrayList<>();
+        List<String> allowedExtensions = List.of(".pdf", ".docx", ".xlsx", ".jpg", ".png");
+
+        for (MultipartFile file : files) {
+            String uuid = UUID.randomUUID().toString();
+            String originalFileName = file.getOriginalFilename();
+            String extension = "";
+
+            if (originalFileName != null && originalFileName.contains(".")) {
+                extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+            }
+
+            if (!allowedExtensions.contains(extension)) {
+                throw Exceptions.WRONG_EXTENSIONS;
+            }
+
+            String savedFileName = uuid + extension;
+            String baseDir = System.getProperty("user.dir");
+            File destination = new File(baseDir + "/" + uploadDir + savedFileName);
+            destination.getParentFile().mkdirs();
+            file.transferTo(destination);
+
+            Attachment attachment = new Attachment();
+            attachment.setId(uuid);
+            attachment.setFileName(originalFileName);
+            attachment.setFilePath(uploadDir + savedFileName);
+            attachment.setFileType(extension);
+
+            attachmentRepository.save(attachment);
+
+            resultList.add(new ResponseUploadAttachmentDto(
+                    attachment.getId(),
+                    attachment.getFileName(),
+                    attachment.getFilePath(),
+                    attachment.getFileType()
+            ));
+        }
+
+        return resultList;
     }
 
 

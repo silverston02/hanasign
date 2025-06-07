@@ -41,11 +41,8 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            // 로그인 및 회원가입 경로는 JWT 검증을 건너뜀
-            // HttpServletRequest의 getRequestURI() 대신 getServletPath()를 사용할 수도 있습니다.
-            // 여기서는 getRequestURI()를 사용하여 전체 경로를 비교합니다.
             String requestURI = request.getRequestURI();
-            if ("/api/auth/login".equals(requestURI) || "/api/auth/register".equals(requestURI)) {
+            if ("/api/auth/login".equals(requestURI) || "/api/auth/register/admin".equals(requestURI) || "/api/auth/register/user".equals(requestURI) ) {
                 filterChain.doFilter(request, response);
                 return; // 다음 필터로 넘기고 여기서 처리를 종료합니다.
             }
