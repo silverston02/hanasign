@@ -20,7 +20,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     List<Contract> findBySupplierIdAndClientIdAndStatus(Long supplierId, Long clientId, ContractStatus status);
     List<Contract> findBySupplierIdAndClientId(Long supplierId, Long clientId);
 
-    // 정렬 기능
+    // 정렬 기능 시간 남으면 하자
     List<Contract> findBySupplierIdOrderByCreatedAtDesc(Long supplierId);
     List<Contract> findByClientIdOrderByCreatedAtDesc(Long clientId);
     List<Contract> findBySupplierIdAndStatusOrderByCreatedAtDesc(Long supplierId, ContractStatus status);
