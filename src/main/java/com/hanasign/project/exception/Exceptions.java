@@ -13,13 +13,7 @@ public class Exceptions {
     public static final CustomException EMAIL_ALREADY_EXISTS =
             new CustomException(HttpStatus.BAD_REQUEST, "10004", "이미 존재하는 이메일입니다.");
 
-    public static final CustomException CONTRACT_NOT_FOUND =
-            new CustomException(HttpStatus.NOT_FOUND, "20001", "계약을 찾을 수 없습니다");
-    public static final CustomException SUPPLIER_NOT_FOUND =
-            new CustomException(HttpStatus.NOT_FOUND, "20001", "계약을 찾을 수 없습니다");
-    public static final CustomException CLIENT_NOT_FOUND =
-            new CustomException(HttpStatus.NOT_FOUND, "20001", "계약을 찾을 수 없습니다");
-  
+
     public static final CustomException CONTRACT_NOT_FOUND = 
       new CustomException(HttpStatus.NOT_FOUND, "30001", "계약을 찾을 수 없습니다");
     public static final CustomException SUPPLIER_NOT_FOUND = 
@@ -33,6 +27,8 @@ public class Exceptions {
             new CustomException(HttpStatus.BAD_REQUEST, "31001", "지원하지 않는 파일 형식");
     public static final CustomException FILE_NOT_FOUND =
             new CustomException(HttpStatus.BAD_REQUEST, "31002", "일치하는 파일이 없습니다. ");
+    public static final CustomException FILE_TRANS_ERROR =
+            new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "31003", "파일 전송 중 오류가 발생했습니다");
 
     //  Comment 관련 예외 코드
     public static final CustomException COMMENT_CONTENT_REQUIRED =
