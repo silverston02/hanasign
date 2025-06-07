@@ -44,12 +44,10 @@ public class User {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt; // 삭제일 (null이면 미삭제)
 
-    @NotNull
-    @Column(name = "company_id", nullable = false)
+    @Column(name = "company_id")
     private Long companyId; // 회사 ID
 
-    @NotNull
-    @Column(name = "team_id", nullable = false)
+    @Column(name = "team_id")
     private Long teamId; // 팀 ID
 
     @Enumerated(EnumType.STRING)

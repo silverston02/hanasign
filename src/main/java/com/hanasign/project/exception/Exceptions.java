@@ -11,6 +11,8 @@ public class Exceptions {
             new CustomException(HttpStatus.UNAUTHORIZED, "10002", "JWT 토큰이 만료되었습니다.");
     public static final CustomException INVALID_JWT =
             new CustomException(HttpStatus.UNAUTHORIZED, "10003", "JWT 토큰이 틀렸습니다.");
+    public static final CustomException EMAIL_ALREADY_EXISTS =
+            new CustomException(HttpStatus.BAD_REQUEST, "10004", "이미 존재하는 이메일입니다.");
 
     public static final CustomException CONTRACT_NOT_FOUND =
             new CustomException(HttpStatus.NOT_FOUND, "20001", "계약을 찾을 수 없습니다");
