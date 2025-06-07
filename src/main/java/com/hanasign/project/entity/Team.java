@@ -37,4 +37,6 @@ public class Team {
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
+    @Column(name = "company_id")
+    private Long companyId; // 회사 ID
 }
