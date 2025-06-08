@@ -12,4 +12,5 @@ public class RequestRegisterUserDto {
     private String email; // 로그인 아이디
     private String pw; // 비밀번호
     private String phonNumber; // 회사 전화번호
+    private Long companyId; // 회사 ID (선택 사항, 회사에 속한 유저의 경우)
 }
