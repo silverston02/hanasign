@@ -17,4 +17,5 @@ public class RequestReginsterAdminDto {
     private String businessNumber;  // Business registration number
     private String faxNumber;   // Fax number
     private String address; // Address
+    private String companyName; // CEO name
 }

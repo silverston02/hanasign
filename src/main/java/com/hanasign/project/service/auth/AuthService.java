@@ -8,6 +8,7 @@ import com.hanasign.project.enums.UserType;
 import com.hanasign.project.exception.Exceptions;
 import com.hanasign.project.repository.UserRepository;
 import com.hanasign.project.repository.company.CompanyRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,12 @@ public class AuthService {
         user.setEmail(requestRegisterUserDto.getEmail()); // 로그인 아이디
         user.setPw(encoder.encode(requestRegisterUserDto.getPw())); // 비밀번호 암호화
         user.setPhonNumber(requestRegisterUserDto.getPhonNumber()); // 회사 전화번호
-        user.setType(UserType.USER); // 유저 타입 설정 (USER)
+        user.setType(UserType.GUEST); // 유저 타입 설정 (게스트)
+        user.setCompanyId(requestRegisterUserDto.getCompanyId()); // 회사 ID 설정 (선택 사항)
         userRepository.save(user);
     }
 
+    @Transactional
     public void registerAdmin(RequestReginsterAdminDto requestReginsterAdminDto) {
         // 회사 정보 생성
         Company company = Company.builder()
@@ -42,6 +45,7 @@ public class AuthService {
                 .businessNumber(requestReginsterAdminDto.getBusinessNumber())
                 .faxNumber(requestReginsterAdminDto.getFaxNumber())
                 .address(requestReginsterAdminDto.getAddress())
+                .name(requestReginsterAdminDto.getCompanyName())
                 .build();
         Company companyCreate = companyRepository.save(company);
         // 이메일 중복 체크
