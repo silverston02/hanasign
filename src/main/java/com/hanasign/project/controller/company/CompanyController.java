@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,8 +30,21 @@ public class CompanyController extends BaseController {
     @GetMapping("/get/{id}")
     public ResponseEntity<Map<String, Object>> findById(@PathVariable Long id) {
         Company company = companyService.findById(id);
-        return  createResponseEntity(HttpStatus.OK, "회사 정보 조회 성공", company);
+        return  createResponseEntity(HttpStatus.OK, "회사 조회 결과", company);
     }
+
+//    //회사 이름으로 조회
+//    @GetMapping("/search")
+//    public ResponseEntity<Map<String, Object>> findCompanyByName(@RequestParam("name") String name) {
+//        Company company = companyService.findByName(name);
+//        return createResponseEntity(HttpStatus.OK, "회사 조회 성공", company);
+//    }
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> findCompaniesByKeyword(@RequestParam("name") String name) {
+        List<Company> companies = companyService.findByNameLike(name);
+        return createResponseEntity(HttpStatus.OK, "회사 검색 성공", companies);
+    }
+
 
     // 회사 정보 생성
     @PostMapping ("/create")

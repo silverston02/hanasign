@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
         }
         return new UserResponseDto(user.get());
     }
-
     @Override
     public void permissionUpdate(String email, RequestPermissionUpdateDto requestPermissionUpdateDto) {
         //자기 자신인지 조회

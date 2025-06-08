@@ -5,12 +5,16 @@ import com.hanasign.project.dto.team.RequestCreateTeamDto;
 import com.hanasign.project.dto.team.RequestUpdateTeamDto;
 import com.hanasign.project.dto.team.ResponseCreateTeamDto;
 import com.hanasign.project.entity.Team;
+import com.hanasign.project.service.UserService;
 import com.hanasign.project.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,10 +30,18 @@ public class TeamController extends BaseController {
         return createResponseEntity(HttpStatus.OK, "부서 정보 조회 성공", team);
     }
 
+    // 이름으로 검색
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> search(@AuthenticationPrincipal UserDetails userDetails,@RequestParam String keyword){
+        List<Team> list = teamService.search(userDetails.getUsername(), keyword);
+        return createResponseEntity(HttpStatus.OK, "부서 검색 결과", list);
+    }
+
+
     // 팀 부서 정보 생성
     @PostMapping("/create")
-    public ResponseEntity<Map<String, Object>> create(@RequestBody RequestCreateTeamDto requestCreateTeamDto) {
-        Team team = teamService.create(requestCreateTeamDto);
+    public ResponseEntity<Map<String, Object>> create(@AuthenticationPrincipal UserDetails userDetails, @RequestBody RequestCreateTeamDto requestCreateTeamDto) {
+        Team team = teamService.create(userDetails.getUsername(), requestCreateTeamDto);
         ResponseCreateTeamDto responseCreateTeamDto = ResponseCreateTeamDto.builder()
                 .id(team.getId())
                 .teamName(team.getTeamName())
