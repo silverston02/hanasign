@@ -94,6 +94,7 @@ public class AttachmentServicelmpl implements AttachmentService {
 
     }
 
+    //파일 다중 업로드
     public List<ResponseUploadAttachmentDto> uploadFiles(List<MultipartFile> files) throws CustomException, IOException {
         List<ResponseUploadAttachmentDto> resultList = new ArrayList<>();
         List<String> allowedExtensions = List.of(".pdf", ".docx", ".xlsx", ".jpg", ".png");
