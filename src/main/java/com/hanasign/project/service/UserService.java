@@ -1,6 +1,6 @@
 package com.hanasign.project.service;
 
-import com.hanasign.project.dto.UserResponseDto;
+import com.hanasign.project.dto.userdto.UserResponseDto;
 import com.hanasign.project.dto.userdto.RequestPermissionUpdateDto;
 
 import java.util.List;

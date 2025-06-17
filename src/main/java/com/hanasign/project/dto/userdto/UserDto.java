@@ -14,12 +14,4 @@ public class UserDto {
     private String email;
     private String pw;
     private String phonNumber;
-
-    public UserDto(User user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.email = user.getEmail();
-        this.pw = user.getPw();
-        this.phonNumber = user.getPhonNumber();
-    }
 }

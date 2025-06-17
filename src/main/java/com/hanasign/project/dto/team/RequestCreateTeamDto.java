@@ -8,5 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestCreateTeamDto {
-    private String teamName;    // Team name
+    private String teamName;
 }

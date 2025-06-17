@@ -10,7 +10,11 @@ import java.util.Optional;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-    Optional<Company> findByIdAndDeletedAtIsNull(Long id);// soft delete를 고려한 조회
+    // 회사의 ID로 조회, 삭제되지 않은 회사만 반환
+    Optional<Company> findByIdAndDeletedAtIsNull(Long id);
+    // 회사의 email 조회, 삭제되지 않은 회사만 반환
     List<Company> findByNameContainingAndDeletedAtIsNull(String name);
 
 }
+
+

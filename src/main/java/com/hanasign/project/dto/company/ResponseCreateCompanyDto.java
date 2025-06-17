@@ -1,8 +1,6 @@
 package com.hanasign.project.dto.company;
 
-
 import lombok.*;
-
 
 @Getter
 @Setter
@@ -10,9 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseCreateCompanyDto {        // Company creation response DTO
-    private Long id;   // Company ID
-    private String phonNumber;   // Phone number
-    private String businessNumber;   // Business registration number
-    private String faxNumber;   // Fax number
-    private String address;   // Address
+    private Long id;
+    private String phonNumber;
+    private String businessNumber;
+    private String faxNumber;
+    private String address;
 }

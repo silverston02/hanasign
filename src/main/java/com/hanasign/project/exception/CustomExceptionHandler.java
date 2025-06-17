@@ -1,9 +1,7 @@
 package com.hanasign.project.exception;
 
-import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -82,7 +80,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
         logger.warn("BadCredentialsException 발생: {}", ex.getMessage(), ex);
-        return buildErrorResponse(ex, HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않습니다.");
+        return buildErrorResponse(ex, HttpStatus.UNAUTHORIZED,"이메일 또는 비밀번호가 올바르지 않습니다.");
     }
 
     @ExceptionHandler(Exception.class)
