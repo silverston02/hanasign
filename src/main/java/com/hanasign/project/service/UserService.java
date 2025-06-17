@@ -1,10 +1,12 @@
 package com.hanasign.project.service;
 
 import com.hanasign.project.dto.UserResponseDto;
+import com.hanasign.project.dto.userdto.RequestPermissionUpdateDto;
 
 import java.util.List;
 
 public interface UserService {
+
 //    UserResponseDto getUserById(Long id);
     UserResponseDto getUserByEmail(String email);
 //    List<UserResponseDto> searchUsersByNameOrEmail(String keyword);
@@ -15,5 +17,9 @@ public interface UserService {
     boolean isAdmin(String email);
 
     List<UserResponseDto> searchUsersByEmail(String keyword);
+  
+    // 승인 api
+    void permissionUpdate(String email, RequestPermissionUpdateDto requestPermissionUpdateDto);
+
 }
 
