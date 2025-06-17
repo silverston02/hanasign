@@ -3,19 +3,18 @@ package com.hanasign.project.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanasign.project.dto.contractdto.request.ContractCancelRequest;
+import com.hanasign.project.dto.contractdto.request.ContractCompletRequest;
 import com.hanasign.project.dto.contractdto.request.ContractCreateRequest;
 import com.hanasign.project.dto.contractdto.request.ContractResendRequest;
-import com.hanasign.project.dto.contractdto.request.ContractUserRequest;
-import com.hanasign.project.entity.Contract;
-import com.hanasign.project.entity.ContractCommentEntity;
+import com.hanasign.project.entity.*;
 import com.hanasign.project.enums.ContractStatus;
 import com.hanasign.project.exception.CustomException;
-import com.hanasign.project.repository.ContractCommentRepository;
-import com.hanasign.project.repository.ContractRepository;
-import com.hanasign.project.repository.UserRepository;
+import com.hanasign.project.repository.*;
+import com.hanasign.project.repository.company.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hanasign.project.exception.Exceptions;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,55 +33,55 @@ public class ContractServiceImpl implements ContractService {
     private final ContractCommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper = new ObjectMapper(); // Jackson ObjectMapper 추가
+    private final CompanyRepository companyRepository;
+    private final AttachmentRepository attachmentRepository;
+    private final ContractHistoryRepository contractHistoryRepository;
+
+
+
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public String createContract(ContractCreateRequest request) throws CustomException {
-        // 공급자 검증
-        Long supplierId;
-        try {
-            supplierId = Long.parseLong(request.getSupplierId());
-            if (!userRepository.findById(supplierId).isPresent()) {  //옵셔널 사용할때 널값으로 예외 처리 가능
-                throw Exceptions.SUPPLIER_NOT_FOUND;
-            }
-        } catch (NumberFormatException e) {
-            this.logger.error("supplier를 찾지 못하였습니다: {}", request.getSupplierId());
-            throw Exceptions.SUPPLIER_NOT_FOUND;
-        }
+    public String createContract(ContractCreateRequest request, UserDetails userDetails) throws CustomException, JsonProcessingException {
 
+
+        // supplier 검증
+        Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
+        Long companyId = user.get().getCompanyId();
+        // 현재 LOGIN 되어있는 ID 가 Supplier 어야 한다
+        // 현재 로그인 된 id의 company가 존재하는지
+        // 현재 로그인된 id가 무조건 supplier로
+        Company company = companyRepository.findByIdAndDeletedAtIsNull(companyId)
+                .orElseThrow(() -> Exceptions.COMPANY_NOT_FOUND);
+
+
+
+        //userDetails.getUsername()
         // 고객 검증
         Long clientId;
-        try {
-            clientId = Long.parseLong(request.getClientId());
-            if (!userRepository.findById(clientId).isPresent()) {
-                throw Exceptions.CLIENT_NOT_FOUND;
-            }
-        } catch (NumberFormatException e) {
-            this.logger.error("client를 찾지 못하였습니다: {}", request.getClientId());          //로거 부분은 영어로 해야되나?
+        clientId = Long.parseLong(request.getClientId());
+        if (companyRepository.findById(clientId).isEmpty()) {
             throw Exceptions.CLIENT_NOT_FOUND;
         }
+
 
         // 계약 생성
         Contract contract = new Contract();
         contract.setTitle(request.getTitle());
-        contract.setSupplierId(supplierId);
+        contract.setSupplierId(companyId);
         contract.setClientId(clientId);
         contract.setStatus(ContractStatus.WAITING);
         contract = contractRepository.save(contract);
 
-        try {
-            contract.setAttachments(objectMapper.writeValueAsString(request.getAttachments()));
-            contractRepository.save(contract); // 첨부파일 정보 저장
-        } catch (JsonProcessingException e) {
-            this.logger.error("첨부파일을 찾지 못하였습니다: {}", e.getMessage());
-            throw Exceptions.FILE_TRANS_ERROR;
-        }
 
-        // 코멘트 추가
+        contract.setAttachments(objectMapper.writeValueAsString(request.getAttachments()));
+        contractRepository.save(contract); // 첨부파일 정보 저장
+
+    // 코멘트 추가
         if (request.getComment() != null && !request.getComment().isEmpty()) {
             ContractCommentEntity comment = new ContractCommentEntity();
             comment.setContractId(contract.getId());
-            comment.setUserId(supplierId);
+            comment.setUserId(companyId);
             comment.setComment(request.getComment());
             comment.setUserType(ContractCommentEntity.UserType.SUPPLIER);
             commentRepository.save(comment);
@@ -92,88 +92,109 @@ public class ContractServiceImpl implements ContractService {
 
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
-    public void resendContract(Long contractId, ContractResendRequest request) {
-        try {
-            // 계약 검증
-            Contract contract = contractRepository.findById(contractId)
-                    .orElseThrow(() -> Exceptions.CONTRACT_NOT_FOUND);
+    public void acceptContract(Long contractId, UserDetails userDetails) throws CustomException{
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> Exceptions.CONTRACT_NOT_FOUND);
 
-            // 유정 검증
-            Long userId;
-            try {
-                userId = Long.parseLong(request.getUserId());
-                if (!userRepository.findById(userId).isPresent()) {
-                    throw Exceptions.USER_NOT_FOUND;
-                }
-            } catch (NumberFormatException e) {
-                this.logger.error("Invalid user ID format: {}", request.getUserId());  //유효하지 않는 사용자 아이디
-                throw Exceptions.USER_NOT_FOUND;
-            }
+        // 사용자 검증
+        Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
+        Long companyId = user.get().getCompanyId();
 
-            try {
-                contract.setAttachments(objectMapper.writeValueAsString(request.getAttachments()));
+        boolean isClient = contract.getClientId().equals(companyId);
+        ContractStatus status = contract.getStatus();
+
+        //계약 상태 검증
+        if(status == ContractStatus.WAITING) {
+            if (!isClient) {
+                throw Exceptions.CONTRACT_USER_NOT_FOUND;
+            } else {
                 contract.setStatus(ContractStatus.INPROGRESS);
                 contractRepository.save(contract);
-            } catch (JsonProcessingException e) {
-                this.logger.error("Error converting attachment information: {}", e.getMessage());
-                throw Exceptions.FILE_TRANS_ERROR;
+                this.logger.info("Contract accepted successfully: {}", contractId);
             }
-
-            ContractCommentEntity comment = new ContractCommentEntity();
-            comment.setContractId(contract.getId());
-            comment.setUserId(userId);
-            comment.setComment(request.getComment());
-            comment.setUserType(ContractCommentEntity.UserType.SUPPLIER);
-            commentRepository.save(comment);
-        } catch (CustomException e) {
-            // 로그
-            this.logger.error("Error in resendContract: {}", e.getErrorMessage());
-            throw new RuntimeException(e.getErrorMessage(), e);
+        }
+        else{
+            throw Exceptions.STATUS_NOT_WAITING;
         }
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, timeout = 30)
-    public void completeContract(Long contractId, ContractUserRequest request) {
-        try {
-            // 계약 검증
-            Contract contract = contractRepository.findById(contractId)
-                    .orElseThrow(() -> Exceptions.CONTRACT_NOT_FOUND);
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+    public void updateContract(Long contractId, ContractResendRequest request, UserDetails userDetails) throws CustomException, JsonProcessingException {
+        // 계약 검증
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> Exceptions.CONTRACT_NOT_FOUND);
 
-            // 사용자 검증
-            Long userId = null;
-            if (request.getUserId() != null) {
-                try {
-                    userId = Long.parseLong(request.getUserId());
-                    if (!userRepository.findById(userId).isPresent()) {
-                        throw Exceptions.USER_NOT_FOUND;
-                    }
-                } catch (NumberFormatException e) {
-                    this.logger.error("Invalid user ID format: {}", request.getUserId());
-                    throw Exceptions.USER_NOT_FOUND;
-                }
+        Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
+        Long companyId = user.get().getCompanyId();
+
+        boolean isSupplier = contract.getSupplierId().equals(companyId);
+
+        // 기존 첨부파일
+        String beforeAttachments = contract.getAttachments();
+        // 새 첨부파일
+        String newAttachments = objectMapper.writeValueAsString(request.getAttachments());
+
+        // 변경 여부 확인
+        if(isSupplier) {
+            if (!newAttachments.equals(beforeAttachments)) {
+                // 첨부파일과 상태 업데이트
+                contract.setAttachments(newAttachments);
+                contract.setStatus(ContractStatus.INPROGRESS);
+                contractRepository.save(contract);
+
+                // 변경 이력 저장
+                ContractHistoryEntity historyEntity = new ContractHistoryEntity();
+                historyEntity.setContractId(contract.getId());
+                historyEntity.setAttachmentBefore(beforeAttachments);
+                historyEntity.setAttachmentAfter(newAttachments);
+                contractHistoryRepository.save(historyEntity);
+
+
+                logger.info("Contract {} updated with new attachments.", contractId);
             } else {
-                throw Exceptions.USER_NOT_FOUND;
+                logger.info("No changes in attachments for contract {}. Skipping update.", contractId);
             }
+        } else
+        {
+          throw Exceptions.SUPPLIER_NOT_FOUND;
+        }
+    }
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, timeout = 30)
+    public void completeContract(Long contractId, UserDetails userDetails) throws CustomException {
+
+        // 계약 검증
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> Exceptions.CONTRACT_NOT_FOUND);
+
+        // 사용자 검증
+        Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
+        Long companyId = user.get().getCompanyId();
 
             // 사용자가 클라이언트인지 공급자인지 확인
-            boolean isClient = userId.equals(contract.getClientId());
-            boolean isSupplier = userId.equals(contract.getSupplierId());
+            boolean isSupplier = contract.getSupplierId().equals(companyId);
+            boolean isClient = contract.getClientId().equals(companyId);
 
             if (!isClient && !isSupplier) {
-                this.logger.error("User is neither client nor supplier for this contract: {}", userId);
                 throw Exceptions.CONTRACT_USER_NOT_FOUND;
             }
+
+        // 계약 상태 검증
+        ContractStatus status = contract.getStatus();
+
+        if(status == ContractStatus.WAITING){
+            throw Exceptions.STATUS_NOT_INPROGRESS;
+        }
 
             // 사용자 유형에 따라 수락 상태 업데이트
             if (isClient) {
                 contract.setClientAccepted(true);
-                this.logger.info("Client accepted contract: {}", contractId);
-            } else if (isSupplier) {
-                contract.setSupplierAccepted(true);
-                this.logger.info("Supplier accepted contract: {}", contractId);
             }
+            if (isSupplier) {
+                contract.setSupplierAccepted(true);
+            }
+
 
             // 양쪽 모두 수락했는지 확인해보는 로지크
             if (contract.getClientAccepted() && contract.getSupplierAccepted()) {
@@ -186,72 +207,69 @@ public class ContractServiceImpl implements ContractService {
             }
 
             contractRepository.save(contract);
-        } catch (CustomException e) {
-            // 로그 기록
-            this.logger.error("Error in completeContract: {}", e.getErrorMessage());
-            // RuntimeException으로 래핑하여 상위로 전파
-            throw new RuntimeException(e.getErrorMessage(), e);
-        }
+            //throw new RuntimeException();
+
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void cancelContract(Long contractId, ContractCancelRequest request) {
-        try {
+    public void cancelContract(Long contractId, ContractCancelRequest request, UserDetails userDetails) throws CustomException{
+
             // 계약 검증
             Contract contract = contractRepository.findById(contractId)
                     .orElseThrow(() -> Exceptions.CONTRACT_NOT_FOUND);
 
-            // 사용자 검증
-            Long userId;
-            try {
-                userId = Long.parseLong(request.getUserId());
-                if (!userRepository.findById(userId).isPresent()) {
-                    throw Exceptions.USER_NOT_FOUND;
-                }
-            } catch (NumberFormatException e) {
-                this.logger.error("Invalid user ID format: {}", request.getUserId());
-                throw Exceptions.USER_NOT_FOUND;
+
+            Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
+            Long companyId = user.get().getCompanyId();
+
+            boolean isSupplier = contract.getSupplierId().equals(companyId);
+            boolean isClient = contract.getClientId().equals(companyId);
+
+            ContractStatus status = contract.getStatus();
+
+            if(status == ContractStatus.WAITING){
+                throw Exceptions.STATUS_NOT_INPROGRESS;
             }
 
             // 계약 취소 처리
-            contract.setStatus(ContractStatus.CANCEL);
-            contractRepository.save(contract);
+            if (!isClient && !isSupplier) {
+                contract.setStatus(ContractStatus.CANCEL);
+                contractRepository.save(contract);
+            }
+            else{
+                throw Exceptions.CONTRACT_USER_NOT_FOUND;
+            }
+
 
             // 취소 사유 코멘트 추가
             ContractCommentEntity comment = new ContractCommentEntity();
             comment.setContractId(contract.getId());
-            comment.setUserId(userId);
+            comment.setUserId(companyId);
             comment.setComment("[취소사유] " + request.getReason());
             comment.setUserType(ContractCommentEntity.UserType.SUPPLIER);
             commentRepository.save(comment);
 
             this.logger.info("Contract cancelled successfully: {}, reason: {}", contractId, request.getReason());
-        } catch (CustomException e) {
-            // 로그 기록
-            this.logger.error("Error in cancelContract: {}", e.getErrorMessage());
-            // RuntimeException으로 래핑하여 상위로 전파
-            throw new RuntimeException(e.getErrorMessage(), e);
         }
-    }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Contract> getContracts(String supplierId, String clientId, String status) {
-        try {
+    public List<Contract> getContracts(String supplierId, String clientId, String status, UserDetails userDetails) throws CustomException{
+
             Long supplierIdLong = null;
             Long clientIdLong = null;
             ContractStatus contractStatus = null;
 
+            Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
+            Long companyId = user.get().getCompanyId();
+
+
             // 공급자 ID 파싱
             if (supplierId != null) {
-                try {
+
                     supplierIdLong = Long.parseLong(supplierId);
-                } catch (NumberFormatException e) {
-                    this.logger.error("Invalid supplier ID format: {}", supplierId);
-                    throw new RuntimeException("유효하지 않은 공급자 ID 형식입니다.");
                 }
-            }
 
             // 고객 ID 파싱
             if (clientId != null) {
@@ -265,13 +283,8 @@ public class ContractServiceImpl implements ContractService {
 
             // 상태 파싱
             if (status != null) {
-                try {
                     contractStatus = ContractStatus.valueOf(status);
-                } catch (IllegalArgumentException e) {
-                    this.logger.error("Invalid contract status: {}", status);
-                    throw new RuntimeException("유효하지 않은 계약 상태입니다.");
                 }
-            }
 
             // 모든 조건
             if (supplierIdLong != null && clientIdLong != null && contractStatus != null) {
@@ -318,13 +331,7 @@ public class ContractServiceImpl implements ContractService {
             else {
                 return contractRepository.findAll(); // 모든 계약 반환 근데 나랑 관련된거만 나오게 수정해야함
             }
-        } catch (Exception e) {
-            // CustomException이 아닌거
-            if (!(e instanceof RuntimeException)) {
-                this.logger.error("Unexpected error in getContracts: {}", e.getMessage());
-            }
-            throw e; // 예외 재전파
-        }
+
     }
 
 }

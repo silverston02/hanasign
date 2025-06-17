@@ -10,5 +10,4 @@ import java.util.Optional;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> findByIdAndDeletedAtIsNull(Long id);// soft delete를 고려한 조회
-
 }

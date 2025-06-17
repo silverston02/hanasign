@@ -8,6 +8,8 @@ import com.hanasign.project.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -19,5 +21,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> Exceptions.USER_NOT_FOUND);
         return new UserResponseDto(user);
+    }
+
+    @Override
+    public UserResponseDto getUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if(user.isEmpty()) {
+            throw Exceptions.USER_NOT_FOUND;
+        }
+        return new UserResponseDto(user.get());
     }
 }

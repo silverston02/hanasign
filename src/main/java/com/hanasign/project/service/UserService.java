@@ -7,4 +7,5 @@ import com.hanasign.project.dto.UserResponseDto;
 
 public interface UserService {
     UserResponseDto getUserById(Long id);
+    UserResponseDto getUserByEmail(String email);
 }
