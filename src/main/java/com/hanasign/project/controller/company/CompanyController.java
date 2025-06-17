@@ -20,11 +20,6 @@ import java.util.Map;
 public class CompanyController extends BaseController {
     private final CompanyService companyService;
 
-    /*// 회사 정보 조회
-    @GetMapping("/get")
-    public ResponseEntity<Map<String, Object>> findAll() {
-        return createResponseEntity(HttpStatus.OK, "회사 정보 조회 성공", companyService);
-    }*/
 
     // 회사 단일 정보 조회 (ID로)
     @GetMapping("/get/{id}")
@@ -33,12 +28,6 @@ public class CompanyController extends BaseController {
         return  createResponseEntity(HttpStatus.OK, "회사 조회 결과", company);
     }
 
-//    //회사 이름으로 조회
-//    @GetMapping("/search")
-//    public ResponseEntity<Map<String, Object>> findCompanyByName(@RequestParam("name") String name) {
-//        Company company = companyService.findByName(name);
-//        return createResponseEntity(HttpStatus.OK, "회사 조회 성공", company);
-//    }
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> findCompaniesByKeyword(@RequestParam("name") String name) {
         List<Company> companies = companyService.findByNameLike(name);

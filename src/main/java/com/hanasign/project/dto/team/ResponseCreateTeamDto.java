@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseCreateTeamDto {
-    private Long id;    // Team ID
-    private String teamName; // Team name
+    private Long id;
+    private String teamName;
 }

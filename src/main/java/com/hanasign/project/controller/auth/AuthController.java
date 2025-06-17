@@ -2,7 +2,7 @@ package com.hanasign.project.controller.auth;
 
 import com.hanasign.project.controller.abs.BaseController;
 import com.hanasign.project.dto.auth.RequestLoginDto;
-import com.hanasign.project.dto.auth.RequestReginsterAdminDto;
+import com.hanasign.project.dto.auth.RequestRegisterAdminDto;
 import com.hanasign.project.dto.auth.RequestRegisterUserDto;
 import com.hanasign.project.exception.CustomException;
 import com.hanasign.project.service.auth.AuthService;
@@ -49,8 +49,8 @@ public class AuthController extends BaseController {
      * 관리자 회원가입 요청 처리
      */
     @PostMapping("/register/admin")
-    public ResponseEntity<Map<String, Object>> registerAdmin(@RequestBody RequestReginsterAdminDto requestReginsterAdminDto) {
-        authService.registerAdmin(requestReginsterAdminDto);
+    public ResponseEntity<Map<String, Object>> registerAdmin(@RequestBody RequestRegisterAdminDto requestRegisterAdminDto) {
+        authService.registerAdmin(requestRegisterAdminDto);
         return createResponseEntity(
                 HttpStatus.OK,
                 "관리자 회원가입 성공",
@@ -75,7 +75,4 @@ public class AuthController extends BaseController {
                 "로그인 성공",
                 token);
     }
-
-
-
 }

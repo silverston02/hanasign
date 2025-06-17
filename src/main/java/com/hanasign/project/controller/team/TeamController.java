@@ -5,7 +5,6 @@ import com.hanasign.project.dto.team.RequestCreateTeamDto;
 import com.hanasign.project.dto.team.RequestUpdateTeamDto;
 import com.hanasign.project.dto.team.ResponseCreateTeamDto;
 import com.hanasign.project.entity.Team;
-import com.hanasign.project.service.UserService;
 import com.hanasign.project.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,7 +36,6 @@ public class TeamController extends BaseController {
         return createResponseEntity(HttpStatus.OK, "부서 검색 결과", list);
     }
 
-
     // 팀 부서 정보 생성
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> create(@AuthenticationPrincipal UserDetails userDetails, @RequestBody RequestCreateTeamDto requestCreateTeamDto) {
@@ -46,20 +44,20 @@ public class TeamController extends BaseController {
                 .id(team.getId())
                 .teamName(team.getTeamName())
                 .build();
-        return createResponseEntity(HttpStatus.CREATED, "부서 정보 생성 성공", requestCreateTeamDto);
+        return createResponseEntity(HttpStatus.CREATED, "부서 정보 생성 성공", responseCreateTeamDto);
     }
 
     // 팀 부서 정보 업데이트
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Map<String, Object>> update(@PathVariable Long id, @RequestBody RequestUpdateTeamDto requestUpdateTeamDto) {
-        Team team = teamService.update(id, requestUpdateTeamDto);
+    @PutMapping("/update")
+    public ResponseEntity<Map<String, Object>> update(@AuthenticationPrincipal UserDetails userDetails, @RequestBody RequestUpdateTeamDto requestUpdateTeamDto) {
+        Team team = teamService.update(userDetails.getUsername(), requestUpdateTeamDto);
         return createResponseEntity(HttpStatus.OK, "부서 정보 업데이트 성공", team);
     }
 
     // 팀 부서 정보 삭제
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
-        teamService.delete(id);
+    public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails) {
+        teamService.delete(id,userDetails.getUsername());
         return createResponseEntity(HttpStatus.OK, "부서 정보 삭제 성공", null);
     }
 }

@@ -8,5 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestUpdateTeamDto {
-    private String teamName;    // Team name
+    private Long id;
+    private String teamName;
 }

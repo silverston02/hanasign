@@ -1,8 +1,6 @@
 package com.hanasign.project.dto.company;
 
-
 import lombok.*;
-
 
 @Getter
 @Setter
@@ -10,8 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestCreateCompanyDto {     // Company 정보 생성 요청 DTO
-    private String phonNumber;  // Phone number
-    private String businessNumber;  // Business registration number
-    private String faxNumber;   // Fax number
-    private String address; // Address
+    private String phonNumber;
+    private String businessNumber;
+    private String faxNumber;
+    private String address;
 }

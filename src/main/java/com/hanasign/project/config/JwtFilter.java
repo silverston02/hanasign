@@ -42,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String requestURI = request.getRequestURI();
-            if ("/api/auth/login".equals(requestURI) || "/api/auth/register/admin".equals(requestURI) || "/api/auth/register/user".equals(requestURI) ) {
+            if ("/api/auth/login".equals(requestURI) || "/api/auth/register/admin".equals(requestURI) || "/api/auth/register/user".equals(requestURI) || requestURI.endsWith(".html") || requestURI.startsWith("/html")) {
                 filterChain.doFilter(request, response);
                 return; // 다음 필터로 넘기고 여기서 처리를 종료합니다.
             }
