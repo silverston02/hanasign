@@ -12,6 +12,8 @@ public class Exceptions {
             new CustomException(HttpStatus.UNAUTHORIZED, "10003", "JWT 토큰이 틀렸습니다.");
     public static final CustomException EMAIL_ALREADY_EXISTS =
             new CustomException(HttpStatus.BAD_REQUEST, "10004", "이미 존재하는 이메일입니다.");
+    public static final CustomException FORBIDDEN =
+            new CustomException(HttpStatus.BAD_REQUEST, "10005", "권한이 존재 하지 않습니다.");
 
 
     public static final CustomException CONTRACT_NOT_FOUND = 

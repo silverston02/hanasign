@@ -1,10 +1,19 @@
-// UserService.java
 package com.hanasign.project.service;
 
-import com.hanasign.project.dto.userdto.LoginRequestDto;
-import com.hanasign.project.dto.userdto.UserDto;
 import com.hanasign.project.dto.UserResponseDto;
 
+import java.util.List;
+
 public interface UserService {
-    UserResponseDto getUserById(Long id);
+//    UserResponseDto getUserById(Long id);
+    UserResponseDto getUserByEmail(String email);
+//    List<UserResponseDto> searchUsersByNameOrEmail(String keyword);
+
+    List<UserResponseDto> searchUsersByName(String keyword);
+
+    // 관리자 권한 체크용 메서드
+    boolean isAdmin(String email);
+
+    List<UserResponseDto> searchUsersByEmail(String keyword);
 }
+
