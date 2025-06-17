@@ -33,7 +33,9 @@ public class CompanyController extends BaseController {
         return  createResponseEntity(HttpStatus.OK, "회사 조회 결과", company);
     }
 
-//    //회사 이름으로 조회
+
+    //    //회사 이름으로 조회
+
 //    @GetMapping("/search")
 //    public ResponseEntity<Map<String, Object>> findCompanyByName(@RequestParam("name") String name) {
 //        Company company = companyService.findByName(name);
