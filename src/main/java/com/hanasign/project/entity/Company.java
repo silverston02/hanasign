@@ -50,8 +50,8 @@ public class Company {
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    @Size(max = 100)
-    @Column(name = "name", length = 100)
+    @Size(max=100)
+    @Column(name="name", length = 100)
     private String name;
 
 }

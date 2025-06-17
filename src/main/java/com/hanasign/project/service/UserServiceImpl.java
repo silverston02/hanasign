@@ -9,7 +9,11 @@ import com.hanasign.project.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -17,22 +21,43 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+//    @Override
+//    public UserResponseDto getUserById(Long id) {
+//        User user = userRepository.findById(id)
+//                .orElseThrow(() -> Exceptions.USER_NOT_FOUND);
+//        return new UserResponseDto(user);
+//    }
+
     @Override
-    public UserResponseDto getUserById(Long id) {
-        User user = userRepository.findById(id)
+    public UserResponseDto getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> Exceptions.USER_NOT_FOUND);
         return new UserResponseDto(user);
     }
 
     @Override
-    public UserResponseDto getUserByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-
-        if(user.isEmpty()) {
-            throw Exceptions.USER_NOT_FOUND;
-        }
-        return new UserResponseDto(user.get());
+    public List<UserResponseDto> searchUsersByName(String keyword) {
+        return userRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword)
+                .stream()
+                .map(UserResponseDto::new)
+                .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean isAdmin(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> Exceptions.USER_NOT_FOUND);
+        return user.getType() == UserType.ADMIN;
+    }
+
+    @Override
+    public List<UserResponseDto> searchUsersByEmail(String keyword) {
+        return userRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword)
+                .stream()
+                .map(UserResponseDto::new)
+                .collect(Collectors.toList());
+    }
+    
     @Override
     public void permissionUpdate(String email, RequestPermissionUpdateDto requestPermissionUpdateDto) {
         //자기 자신인지 조회
@@ -55,6 +80,7 @@ public class UserServiceImpl implements UserService {
 
         // 권한 업데이트 로직
         targetUser.setType(requestPermissionUpdateDto.getUserType());
-        userRepository.save(targetUser);
+        userRepository.save(targetUser);                
     }
+
 }

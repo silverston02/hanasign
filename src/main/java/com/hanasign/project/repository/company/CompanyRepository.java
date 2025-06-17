@@ -14,4 +14,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> findByIdAndDeletedAtIsNull(Long id);
     // 회사의 email 조회, 삭제되지 않은 회사만 반환
     List<Company> findByNameContainingAndDeletedAtIsNull(String name);
+
 }
+
+
