@@ -13,8 +13,6 @@ public class Exceptions {
             new CustomException(HttpStatus.UNAUTHORIZED,  "JWT 토큰이 틀렸습니다.");
     public static final CustomException EMAIL_ALREADY_EXISTS =
             new CustomException(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다.");
-
-            new CustomException(HttpStatus.BAD_REQUEST,  "이미 존재하는 이메일입니다.");
     public static final CustomException FORBIDDEN =
             new CustomException(HttpStatus.BAD_REQUEST, "권한이 존재 하지 않습니다.");
 
@@ -29,11 +27,6 @@ public class Exceptions {
       new CustomException(HttpStatus.NOT_FOUND,"계약을 찾을 수 없습니다");
     public static final CustomException CLIENT_NOT_FOUND = 
       new CustomException(HttpStatus.NOT_FOUND,"계약을 찾을 수 없습니다");
-    public static final CustomException CONTRACT_USER_NOT_FOUND = 
-      new CustomException(HttpStatus.BAD_REQUEST, "사용자가 이 계약의 클라이언트나 공급자가 아닙니다.");
-      new CustomException(HttpStatus.NOT_FOUND, "SUPPLIER을 찾을 수 없습니다");
-    public static final CustomException CLIENT_NOT_FOUND = 
-      new CustomException(HttpStatus.NOT_FOUND, "CLIENT을 찾을 수 없습니다");
     public static final CustomException CONTRACT_USER_NOT_FOUND = 
       new CustomException(HttpStatus.BAD_REQUEST, "사용자가 이 계약의 클라이언트나 공급자가 아닙니다.");
     public static final CustomException STATUS_NOT_WAITING =

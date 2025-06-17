@@ -5,13 +5,6 @@ import com.hanasign.project.controller.abs.BaseController;
 
 import com.hanasign.project.dto.userdto.RequestPermissionUpdateDto;
 import com.hanasign.project.dto.userdto.UserResponseDto;
-
-import com.hanasign.project.dto.userdto.LoginRequestDto;
-import com.hanasign.project.dto.userdto.RequestPermissionUpdateDto;
-import com.hanasign.project.dto.userdto.UserDto;
-
-import com.hanasign.project.dto.UserResponseDto;
-
 import com.hanasign.project.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -68,12 +61,6 @@ public class UserController extends BaseController {
 
         List<UserResponseDto> result = userService.searchUsersByEmail(keyword);
         return createResponseEntity(HttpStatus.OK, "이메일로 사용자 조회 성공", result);
-    }
-
-    // 현재 로그인된 사용자의 정보 조회
-    @GetMapping("/me")
-    public ResponseEntity<UserResponseDto> getUser(@AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(userService.getUserByEmail(userDetails.getUsername()));
     }
 
     @PostMapping("/permission/update")
