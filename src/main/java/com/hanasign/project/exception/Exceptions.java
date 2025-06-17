@@ -3,6 +3,7 @@ package com.hanasign.project.exception;
 import org.springframework.http.HttpStatus;
 
 public class Exceptions {
+
     //  auth 예외 코드
     public static final CustomException USER_NOT_FOUND =
             new CustomException(HttpStatus.NOT_FOUND, "10001", "사용자를 찾을 수 없습니다.");
@@ -12,6 +13,10 @@ public class Exceptions {
             new CustomException(HttpStatus.UNAUTHORIZED, "10003", "JWT 토큰이 틀렸습니다.");
     public static final CustomException EMAIL_ALREADY_EXISTS =
             new CustomException(HttpStatus.BAD_REQUEST, "10004", "이미 존재하는 이메일입니다.");
+
+    // User 관련 예외 코드
+    public static final CustomException PERMISSION_DENIED =
+            new CustomException(HttpStatus.FORBIDDEN, "20001", "권한이 없습니다.");
 
 
     public static final CustomException CONTRACT_NOT_FOUND = 

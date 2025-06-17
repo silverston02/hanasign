@@ -45,16 +45,33 @@ public class AttachmentController extends BaseController {
         this.rootLocation= Paths.get(rootPath).toAbsolutePath().normalize();
     }
 
-    // 파일 업로드
+//    // 파일 업로드
+//    @PostMapping("/upload")
+//    public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("file") MultipartFile file) throws IOException, CustomException {
+//        this.logger.info("파일 업로드 요청이 들어옴: " + file.getOriginalFilename());
+//        RequestUploadAttachmentDto requestDto = new RequestUploadAttachmentDto();
+//        requestDto.setFile(file);
+//
+//        ResponseUploadAttachmentDto responseDto = attachmentService.uploadFile(requestDto);
+//        return createResponseEntity(HttpStatus.CREATED, "파일 업로드 완료", responseDto);
+//
+//    }
+
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("file") MultipartFile file) throws IOException, CustomException {
-        this.logger.info("파일 업로드 요청이 들어옴: " + file.getOriginalFilename());
-        RequestUploadAttachmentDto requestDto = new RequestUploadAttachmentDto();
-        requestDto.setFile(file);
+    public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("files") List<MultipartFile> files) throws IOException, CustomException {
+        logger.info("파일 업로드 요청: 총 {}개", files.size());
 
-        ResponseUploadAttachmentDto responseDto = attachmentService.uploadFile(requestDto);
-        return createResponseEntity(HttpStatus.CREATED, "파일 업로드 완료", responseDto);
-
+        if (files.size() == 1) {
+            // 단일 파일 업로드 처리
+            RequestUploadAttachmentDto requestDto = new RequestUploadAttachmentDto();
+            requestDto.setFile(files.get(0));
+            ResponseUploadAttachmentDto responseDto = attachmentService.uploadFile(requestDto);
+            return createResponseEntity(HttpStatus.CREATED, "파일 업로드 완료", responseDto);
+        } else {
+            // 다중 파일 업로드 처리
+            List<ResponseUploadAttachmentDto> responseList = attachmentService.uploadFiles(files);
+            return createResponseEntity(HttpStatus.CREATED, "파일 다중 업로드 완료", responseList);
+        }
     }
 
     /*
@@ -123,13 +140,24 @@ public class AttachmentController extends BaseController {
     }
 
     //파일 다중업로드
-    @PostMapping("/multi-upload")
-    public ResponseEntity<Map<String, Object>> uploadMultipleFiles(@RequestParam("files") List<MultipartFile> files) throws IOException {
+    //    @PostMapping("/multi-upload")
+    //    public ResponseEntity<Map<String, Object>> uploadMultipleFiles(@RequestParam("files") List<MultipartFile> files) throws IOException {
+    //        try {
+    //            List<ResponseUploadAttachmentDto> responses = attachmentService.uploadFiles(files);
+    //            return createResponseEntity(HttpStatus.CREATED, "여러 파일 업로드 완료", responses);
+    //        } catch (CustomException e) {
+    //            return createResponseEntity(e.getStatus(), e.getMessage(), null);
+    //        }
+    //    }
+    @PostMapping("/upload-multiple")
+    public ResponseEntity<Map<String, Object>> uploadFiles(@RequestParam("files") List<MultipartFile> files) {
         try {
-            List<ResponseUploadAttachmentDto> responses = attachmentService.uploadFiles(files);
-            return createResponseEntity(HttpStatus.CREATED, "여러 파일 업로드 완료", responses);
+            List<ResponseUploadAttachmentDto> responseList = attachmentService.uploadFiles(files);
+            return createResponseEntity(HttpStatus.CREATED, "파일 다중 업로드 완료", responseList);
         } catch (CustomException e) {
-            return createResponseEntity(e.getStatus(), e.getMessage(), null);
+            return createResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage(), null);
+        } catch (Exception e) {
+            return createResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류", null);
         }
     }
 
