@@ -22,11 +22,16 @@ public class Exceptions {
     public static final CustomException CONTRACT_NOT_FOUND = 
       new CustomException(HttpStatus.NOT_FOUND, "30001", "계약을 찾을 수 없습니다");
     public static final CustomException SUPPLIER_NOT_FOUND = 
-      new CustomException(HttpStatus.NOT_FOUND, "30002", "계약을 찾을 수 없습니다");
+      new CustomException(HttpStatus.NOT_FOUND, "30002", "SUPPLIER을 찾을 수 없습니다");
     public static final CustomException CLIENT_NOT_FOUND = 
-      new CustomException(HttpStatus.NOT_FOUND, "30003", "계약을 찾을 수 없습니다");
+      new CustomException(HttpStatus.NOT_FOUND, "30003", "CLIENT을 찾을 수 없습니다");
     public static final CustomException CONTRACT_USER_NOT_FOUND = 
       new CustomException(HttpStatus.BAD_REQUEST, "30004","사용자가 이 계약의 클라이언트나 공급자가 아닙니다.");
+    public static final CustomException STATUS_NOT_WAITING =
+            new CustomException(HttpStatus.BAD_REQUEST, "30005","이미 계약 진행중입니다.");
+    public static final CustomException STATUS_NOT_INPROGRESS =
+            new CustomException(HttpStatus.BAD_REQUEST, "30006","계약이 진행중이지 않습니다.");
+
 
     public static final CustomException WRONG_EXTENSIONS =
             new CustomException(HttpStatus.BAD_REQUEST, "31001", "지원하지 않는 파일 형식");
@@ -34,6 +39,7 @@ public class Exceptions {
             new CustomException(HttpStatus.BAD_REQUEST, "31002", "일치하는 파일이 없습니다. ");
     public static final CustomException FILE_TRANS_ERROR =
             new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "31003", "파일 전송 중 오류가 발생했습니다");
+
 
     //  Comment 관련 예외 코드
     public static final CustomException COMMENT_CONTENT_REQUIRED =
