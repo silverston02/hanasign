@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(UserResponseDto::new)
                 .collect(Collectors.toList());
-                
+    }
     
     @Override
     public void permissionUpdate(String email, RequestPermissionUpdateDto requestPermissionUpdateDto) {
