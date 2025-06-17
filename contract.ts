@@ -113,7 +113,7 @@ export class ContractService {
     // 계약서 파일 유효성 검증 로직
     const validTypes = ['application/pdf', 'application/msword', 
                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 24 * 60 * 60 * 1000;
 
     if (!validTypes.includes(file.type)) {
       throw new Error('Invalid file type');
