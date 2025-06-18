@@ -54,7 +54,6 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
-                                "/**/*.html",
                                 "/api/auth/**",
                                 "/api/users/**",
                                 "/api/company/**"
