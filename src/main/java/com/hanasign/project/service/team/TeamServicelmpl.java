@@ -40,16 +40,24 @@ public class TeamServicelmpl implements TeamService {
     }
 
     // 팀 정보 업데이트
-    public Team update(String email, RequestUpdateTeamDto requestUpdateTeamDto){
-        Optional<Team> team = teamRepository.findByIdAndDeletedAtIsNull(requestUpdateTeamDto.getId());
-        User user = userRepository.findByEmail(email).get();
-        // 유저 ID = 팀 ID 비교
-        if (team.isEmpty() || !team.get().getCompanyId().equals(user.getCompanyId())) {
+    public Team update(String email, Long id, RequestUpdateTeamDto requestUpdateTeamDto){
+        Optional<Team> team = teamRepository.findByIdAndDeletedAtIsNull(id); // ✅ requestUpdateTeamDto.getId() → id
+
+        if (team.isEmpty()) {
             throw Exceptions.TEAM_NOT_FOUND;
         }
-        Team existhingTeam = team.get();
-        existhingTeam.setTeamName(requestUpdateTeamDto.getTeamName());
-        return teamRepository.save(existhingTeam);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> Exceptions.USER_NOT_FOUND);
+
+        // 유저의 회사 ID와 팀의 회사 ID 비교
+        if (!team.get().getCompanyId().equals(user.getCompanyId())) {
+            throw Exceptions.TEAM_NOT_FOUND;
+        }
+
+        Team existingTeam = team.get();
+        existingTeam.setTeamName(requestUpdateTeamDto.getTeamName());
+        return teamRepository.save(existingTeam);
     }
 
     // 이름으로 조회

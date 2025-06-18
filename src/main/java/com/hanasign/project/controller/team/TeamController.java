@@ -48,9 +48,11 @@ public class TeamController extends BaseController {
     }
 
     // 팀 부서 정보 업데이트
-    @PutMapping("/update")
-    public ResponseEntity<Map<String, Object>> update(@AuthenticationPrincipal UserDetails userDetails, @RequestBody RequestUpdateTeamDto requestUpdateTeamDto) {
-        Team team = teamService.update(userDetails.getUsername(), requestUpdateTeamDto);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Map<String, Object>> update( @PathVariable Long id,
+                                                       @AuthenticationPrincipal UserDetails userDetails,
+                                                       @RequestBody RequestUpdateTeamDto requestUpdateTeamDto) {
+        Team team = teamService.update(userDetails.getUsername(), id, requestUpdateTeamDto);
         return createResponseEntity(HttpStatus.OK, "부서 정보 업데이트 성공", team);
     }
 
